@@ -28,8 +28,8 @@ public class DataManager {
         books = br.readBook();
         for(Book book : books){
             try {
-                book.setAuthor(getAuthorByIndex(book.getAuthorId()));
-                book.setType(getTypeByIndex(book.getTypeId()));
+                book.setAuthor(getAuthorById(book.getAuthorId()));
+                book.setType(getTypeById(book.getTypeId()));
             }catch (Exception e){
                 System.err.println("Erro no livro "+book.getName());
                 e.printStackTrace();
@@ -42,33 +42,33 @@ public class DataManager {
         return dataManager;
     }
 
-    public Student getStudentByIndex(int i) {
+    public Student getStudentById(int i) {
         try{
-            return students.get(i);
+            return students.get(i-1);
         }catch (IndexOutOfBoundsException e){
             return null;
         }
     }
 
-    public Book getBookByIndex(int i) {
+    public Book getBookById(int i) {
         try{
-            return books.get(i);
+            return books.get(i-1);
         }catch (IndexOutOfBoundsException e){
             return null;
         }
     }
 
-    public Author getAuthorByIndex(int i) {
+    public Author getAuthorById(int i) {
         try{
-            return authors.get(i);
+            return authors.get(i-1);
         }catch (IndexOutOfBoundsException e){
             return null;
         }
     }
 
-    public Type getTypeByIndex(int i) {
+    public Type getTypeById(int i) {
         try{
-            return types.get(i);
+            return types.get(i-1);
         }catch (IndexOutOfBoundsException e){
             return null;
         }
