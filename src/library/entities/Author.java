@@ -8,6 +8,7 @@ public class Author implements Serializable {
     private int authorId;
     private String name;
     private String surname;
+    private int timesBorrowed;
 
     public Author(int authorId, String name, String surname){
         this.authorId = authorId;
@@ -25,5 +26,13 @@ public class Author implements Serializable {
 
     public String getSurname() {
         return surname;
+    }
+
+    public int getTimesBorrowed() {
+        return timesBorrowed;
+    }
+
+    public void addTimesBorrowed() {
+        this.timesBorrowed++;
     }
 }

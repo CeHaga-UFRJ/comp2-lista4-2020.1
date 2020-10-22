@@ -13,6 +13,7 @@ public class Book implements Serializable {
     private int typeId;
     private Author author;
     private Type type;
+    private int timesBorrowed;
 
     public Book(int bookId, String name, int pageCount, int point, int authorId, int typeId) {
         this.bookId = bookId;
@@ -63,5 +64,13 @@ public class Book implements Serializable {
 
     public int getTypeId() {
         return typeId;
+    }
+
+    public int getTimesBorrowed() {
+        return timesBorrowed;
+    }
+
+    public void addTimesBorrowed() {
+        this.timesBorrowed++;
     }
 }

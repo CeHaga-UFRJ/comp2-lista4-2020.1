@@ -13,6 +13,7 @@ public class Student implements Serializable {
     private char gender;
     private String classCode;
     private int points;
+    private int borrowedBooks;
 
     public Student(int studentId, String name, String surname, LocalDate birthdate, char gender, String classCode, int points) {
         this.studentId = studentId;
@@ -50,5 +51,13 @@ public class Student implements Serializable {
 
     public int getPoints() {
         return points;
+    }
+
+    public int getBorrowedBooks() {
+        return borrowedBooks;
+    }
+
+    public void addBorrowedBooks() {
+        this.borrowedBooks++;
     }
 }

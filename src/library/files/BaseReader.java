@@ -137,10 +137,10 @@ public class BaseReader {
         return books;
     }
 
-    public HashMap<Integer, List<Borrow>> readBorrow(){
-        HashMap<Integer, List<Borrow>> borrows = new HashMap<>();
+    public List<Borrow> readBorrow(){
+        List<Borrow> borrows = new ArrayList<>();
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("resources/data/borrows.ser"))) {
-            borrows = (HashMap<Integer, List<Borrow>>) ois.readObject();
+            borrows = (List<Borrow>) ois.readObject();
             return borrows;
         }catch (ClassNotFoundException e){
             System.err.println("Classe não encontrada");
@@ -160,8 +160,7 @@ public class BaseReader {
                 int bookId = Integer.parseInt(data[2]);
                 LocalDate takenDate = LocalDate.parse(data[3]);
                 LocalDate broughtDate = LocalDate.parse(data[4]);
-                if(!borrows.containsKey(bookId)) borrows.put(bookId, new ArrayList<Borrow>());
-                borrows.get(bookId).add(new Borrow(borrowId, studentId, bookId, takenDate, broughtDate));
+                borrows.add(new Borrow(borrowId, studentId, bookId, takenDate, broughtDate));
             }
         }catch (IOException e){
             System.err.println("Erro ao abrir arquivo borrows.csv");

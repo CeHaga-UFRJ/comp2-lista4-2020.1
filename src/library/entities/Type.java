@@ -7,6 +7,7 @@ public class Type implements Serializable {
 
     private int typeId;
     private String name;
+    private int timesBorrowed;
 
     public Type(int typeId, String name) {
         this.typeId = typeId;
@@ -19,5 +20,13 @@ public class Type implements Serializable {
 
     public String getName() {
         return name;
+    }
+
+    public int getTimesBorrowed() {
+        return timesBorrowed;
+    }
+
+    public void addTimesBorrowed() {
+        this.timesBorrowed++;
     }
 }

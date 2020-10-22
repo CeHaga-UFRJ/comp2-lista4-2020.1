@@ -1,10 +1,11 @@
 package library.controller;
 
-import library.comparators.MostRecentBorrowComparator;
+import library.comparators.*;
 import library.entities.*;
 import library.files.BaseReader;
 
-import java.util.HashMap;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,7 +18,7 @@ public class DataManager {
     private List<Book> books;
     private List<Author> authors;
     private List<Type> types;
-    private HashMap<Integer, List<Borrow>> borrows;
+    private List<Borrow> borrows;
 
     private DataManager(){
         BaseReader br = new BaseReader();
@@ -35,13 +36,20 @@ public class DataManager {
             }
         }
         borrows = br.readBorrow();
-        for(List<Borrow> borrowsList : borrows.values()){
-            borrowsList.sort(new MostRecentBorrowComparator());
-            for(Borrow borrow : borrowsList){
-                borrow.setBook(getBookById(borrow.getBookId()));
-                borrow.setStudent(getStudentById(borrow.getStudentId()));
-            }
+        for(Borrow borrow : borrows){
+            borrow.setBook(getBookById(borrow.getBookId()));
+            borrow.setStudent(getStudentById(borrow.getStudentId()));
+            borrow.getStudent().addBorrowedBooks();
+            borrow.getBook().addTimesBorrowed();
+            borrow.getBook().getAuthor().addTimesBorrowed();
+            borrow.getBook().getType().addTimesBorrowed();
         }
+
+        types.sort(new MostPopularTypesComparator());
+        authors.sort(new MostPopularAuthorsComparator());
+        students.sort(new MostBorrowerStudentsComparator());
+        books.sort(new MostBorrowedBooksComparator());
+        borrows.sort(new MostRecentBorrowComparator());
     }
 
     public static DataManager getDataManager() {
@@ -82,6 +90,47 @@ public class DataManager {
     }
 
     public List<Borrow> lastNBorrows(int n){
-        
+        int min = n < borrows.size() ? n : borrows.size();
+        List<Borrow> rank = new ArrayList<>(borrows.subList(0,min));
+        rank.sort(new MostRecentBorrowComparator());
+        return rank;
+    }
+
+    public List<Borrow> borrowsLastNDays(int n){
+        List<Borrow> rank = new ArrayList<>();
+        LocalDate day = LocalDate.now().minusDays(n);
+        for(Borrow borrow : borrows){
+            if(borrow.getTakenDate().isBefore(day)) break;
+            rank.add(borrow);
+        }
+        return rank;
+    }
+
+    public List<Student> mostNBorrowers(int n){
+        int min = n < students.size() ? n : students.size();
+        List<Student> rank = new ArrayList<>(students.subList(0, min));
+        rank.sort(new MostBorrowerStudentsComparator());
+        return rank;
+    }
+
+    public List<Book> mostNBorrowedBooks(int n){
+        int min = n < books.size() ? n : books.size();
+        List<Book> rank = new ArrayList<>(books.subList(0, min));
+        rank.sort(new MostBorrowedBooksComparator());
+        return rank;
+    }
+
+    public List<Author> mostNPopularAuthors(int n){
+        int min = n < authors.size() ? n : authors.size();
+        List<Author> rank = new ArrayList<>(authors.subList(0, min));
+        rank.sort(new MostPopularAuthorsComparator());
+        return rank;
+    }
+
+    public List<Type> mostNPopularTypes(int n){
+        int min = n < types.size() ? n : types.size();
+        List<Type> rank = new ArrayList<>(types.subList(0, min));
+        rank.sort(new MostPopularTypesComparator());
+        return rank;
     }
 }
