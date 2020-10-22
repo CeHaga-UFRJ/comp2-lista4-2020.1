@@ -1,8 +1,11 @@
 package library.entities;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Student {
+public class Student implements Serializable {
+    public static final long serialVersionUID = 4000L;
+
     private int studentId;
     private String name;
     private String surname;

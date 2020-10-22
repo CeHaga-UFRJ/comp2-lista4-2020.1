@@ -1,21 +1,24 @@
-package library.input;
+package library.files;
 
-import library.entities.Author;
-import library.entities.Book;
-import library.entities.Student;
-import library.entities.Type;
+import library.entities.*;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class BaseReader {
-    public List<Type> readType(){
+    public List<Type> readType() {
         List<Type> types = new ArrayList<Type>();
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("resources/data/types.ser"))) {
+            types = (List<Type>) ois.readObject();
+            return types;
+        }catch (ClassNotFoundException e){
+            System.err.println("Classe não encontrada");
+            e.printStackTrace();
+        }catch (IOException e){
+            System.err.println("Erro ao abrir arquivo types.ser");
+            e.printStackTrace();
+        }
         try(BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("resources/base/types.csv")))){
             br.readLine(); //Cabecalho
             String line;
@@ -36,6 +39,16 @@ public class BaseReader {
 
     public List<Author> readAuthor(){
         List<Author> authors = new ArrayList<Author>();
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("resources/data/authors.ser"))) {
+            authors = (List<Author>) ois.readObject();
+            return authors;
+        }catch (ClassNotFoundException e){
+            System.err.println("Classe não encontrada");
+            e.printStackTrace();
+        }catch (IOException e){
+            System.err.println("Erro ao abrir arquivo authors.ser");
+            e.printStackTrace();
+        }
         try(BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("resources/base/authorsFull.csv")))){
             br.readLine(); //Cabecalho
             String line;
@@ -57,6 +70,16 @@ public class BaseReader {
 
     public List<Student> readStudent(){
         List<Student> students = new ArrayList<Student>();
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("resources/data/students.ser"))) {
+            students = (List<Student>) ois.readObject();
+            return students;
+        }catch (ClassNotFoundException e){
+            System.err.println("Classe não encontrada");
+            e.printStackTrace();
+        }catch (IOException e){
+            System.err.println("Erro ao abrir arquivo students.ser");
+            e.printStackTrace();
+        }
         try(BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("resources/base/students.csv")))){
             br.readLine(); //Cabecalho
             String line;
@@ -82,6 +105,16 @@ public class BaseReader {
 
     public List<Book> readBook(){
         List<Book> books = new ArrayList<Book>();
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("resources/data/books.ser"))) {
+            books = (List<Book>) ois.readObject();
+            return books;
+        }catch (ClassNotFoundException e){
+            System.err.println("Classe não encontrada");
+            e.printStackTrace();
+        }catch (IOException e){
+            System.err.println("Erro ao abrir arquivo books.ser");
+            e.printStackTrace();
+        }
         try(BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("resources/base/books.csv")))){
             br.readLine(); //Cabecalho
             String line;
@@ -102,5 +135,39 @@ public class BaseReader {
             return null;
         }
         return books;
+    }
+
+    public HashMap<Integer, List<Borrow>> readBorrow(){
+        HashMap<Integer, List<Borrow>> borrows = new HashMap<>();
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("resources/data/borrows.ser"))) {
+            borrows = (HashMap<Integer, List<Borrow>>) ois.readObject();
+            return borrows;
+        }catch (ClassNotFoundException e){
+            System.err.println("Classe não encontrada");
+            e.printStackTrace();
+        }catch (IOException e){
+            System.err.println("Erro ao abrir arquivo borrows.ser");
+            e.printStackTrace();
+        }
+        try(BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("resources/base/borrows.csv")))){
+            br.readLine(); //Cabecalho
+            String line;
+            while((line = br.readLine()) != null){
+                String formattedLine = line.substring(1,line.length()-1);
+                String[] data = formattedLine.split("\",\"");
+                int borrowId = Integer.parseInt(data[0]);
+                int studentId = Integer.parseInt(data[1]);
+                int bookId = Integer.parseInt(data[2]);
+                LocalDate takenDate = LocalDate.parse(data[3]);
+                LocalDate broughtDate = LocalDate.parse(data[4]);
+                if(!borrows.containsKey(bookId)) borrows.put(bookId, new ArrayList<Borrow>());
+                borrows.get(bookId).add(new Borrow(borrowId, studentId, bookId, takenDate, broughtDate));
+            }
+        }catch (IOException e){
+            System.err.println("Erro ao abrir arquivo borrows.csv");
+            e.printStackTrace();
+            return null;
+        }
+        return borrows;
     }
 }

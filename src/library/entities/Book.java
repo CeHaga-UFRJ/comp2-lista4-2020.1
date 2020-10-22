@@ -1,6 +1,10 @@
 package library.entities;
 
-public class Book {
+import java.io.Serializable;
+
+public class Book implements Serializable {
+    public static final long serialVersionUID = 2000L;
+
     private int bookId;
     private String name;
     private int pageCount;

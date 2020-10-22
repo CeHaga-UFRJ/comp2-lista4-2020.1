@@ -1,6 +1,10 @@
 package library.entities;
 
-public class Type {
+import java.io.Serializable;
+
+public class Type implements Serializable {
+    public static final long serialVersionUID = 5000L;
+
     private int typeId;
     private String name;
 

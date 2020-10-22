@@ -1,13 +1,11 @@
 package library.controller;
 
-import library.entities.Author;
-import library.entities.Book;
-import library.entities.Student;
-import library.entities.Type;
-import library.input.BaseReader;
+import library.comparators.MostRecentBorrowComparator;
+import library.entities.*;
+import library.files.BaseReader;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Fachada para armazenar todos os dados do programa
@@ -19,6 +17,7 @@ public class DataManager {
     private List<Book> books;
     private List<Author> authors;
     private List<Type> types;
+    private HashMap<Integer, List<Borrow>> borrows;
 
     private DataManager(){
         BaseReader br = new BaseReader();
@@ -33,6 +32,14 @@ public class DataManager {
             }catch (Exception e){
                 System.err.println("Erro no livro "+book.getName());
                 e.printStackTrace();
+            }
+        }
+        borrows = br.readBorrow();
+        for(List<Borrow> borrowsList : borrows.values()){
+            borrowsList.sort(new MostRecentBorrowComparator());
+            for(Borrow borrow : borrowsList){
+                borrow.setBook(getBookById(borrow.getBookId()));
+                borrow.setStudent(getStudentById(borrow.getStudentId()));
             }
         }
     }
@@ -72,5 +79,9 @@ public class DataManager {
         }catch (IndexOutOfBoundsException e){
             return null;
         }
+    }
+
+    public List<Borrow> lastNBorrows(int n){
+        
     }
 }
