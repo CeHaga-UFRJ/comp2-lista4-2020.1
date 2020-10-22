@@ -2,6 +2,7 @@ package library.view;
 
 import library.controller.DataManager;
 import library.entities.*;
+import library.exceptions.NumberOutOfRangeException;
 
 import java.util.*;
 
@@ -10,29 +11,12 @@ public class LibraryView {
 
     public void startProgram(){
         while(true){
-            System.out.println("Bem-vindo à Biblioteca Show, o que gostaria de fazer?");
-            System.out.println("\t1 - Realizar um Cadastro");
-            System.out.println("\t2 - Realizar uma Edição");
-            System.out.println("\t3 - Realizar uma Remoção");
-            System.out.println("\t4 - Realizar um Empréstimo");
-            System.out.println("\t5 - Realizar uma Devolução");
-            System.out.println("\t6 - Consultar uma Estatística");
-            System.out.println("\t7 - Finalizar o Programa");
-            String input = sc.nextLine();
-            int esc = 0;
-            while(esc == 0){
-                try{
-                    esc = Integer.parseInt(sc.nextLine());
-                    if(esc < 1 || esc > 7){
-                        System.out.println("Entre com um número de 1 a 7");
-                        esc = 0;
-                    }
-                }catch (NumberFormatException e){
-                    System.out.println("Entre com um número de 1 a 7");
-                }
-            }
-            switch(esc){
+            printMenu();
+            int input = readNumber(1,7);
+            switch(input){
                 case 1:
+                    printRegisterMenu();
+                    register(readNumber(1,4));
                     break;
                 case 2:
                     break;
@@ -43,11 +27,121 @@ public class LibraryView {
                 case 5:
                     break;
                 case 6:
+                    printStatsMenu();
+                    stats(readNumber(1,7));
                     break;
                 case 7:
                     System.out.println("Obrigado por utilizar nossos serviços, tenha um bom dia! :)");
                     return;
             }
+        }
+    }
+
+    private int readNumber(int min, int max){
+        if(min > max) throw new NumberOutOfRangeException("Mínimo maior que máximo");
+        int input = min - 1;
+        while(true){
+            try{
+                input = Integer.parseInt(sc.nextLine());
+                if(input < min || input > max){
+                    System.out.println("Entre com um número de "+min+" a "+max);
+                    continue;
+                }
+            }catch (NumberFormatException e){
+                System.out.println("Entre com um número de "+min+" a "+max);
+                continue;
+            }
+            return input;
+        }
+    }
+
+    private int readNumber(int min){
+        int input = min - 1;
+        while(true){
+            try{
+                input = Integer.parseInt(sc.nextLine());
+                if(input < min){
+                    System.out.println("Entre com um número maior que "+min);
+                    continue;
+                }
+            }catch (NumberFormatException e){
+                System.out.println("Entre com um número maior que "+min);
+                continue;
+            }
+            return input;
+        }
+    }
+
+    private void printMenu() {
+        System.out.println("Bem-vindo à Biblioteca Show, o que gostaria de fazer?");
+        System.out.println("\t1 - Realizar um cadastro");
+        System.out.println("\t2 - Realizar uma edição");
+        System.out.println("\t3 - Realizar uma remoção");
+        System.out.println("\t4 - Realizar um empréstimo");
+        System.out.println("\t5 - Realizar uma devolução");
+        System.out.println("\t6 - Consultar uma estatística");
+        System.out.println("\t7 - Finalizar o programa");
+    }
+
+    private void printStatsMenu(){
+        System.out.println("Qual estatística gostaria de consultar?");
+        System.out.println("\t1 - Últimos empréstimos");
+        System.out.println("\t2 - Empréstimos nos últimos Dias");
+        System.out.println("\t3 - Estudantes que mais pegam emprestado");
+        System.out.println("\t4 - Livros mais emprestados");
+        System.out.println("\t5 - Autores mais populares");
+        System.out.println("\t6 - Estilos mais populares");
+        System.out.println("\t7 - Voltar ao menu");
+    }
+
+    private void stats(int input){
+        if(input == 7) return;
+        DataManager dm = DataManager.getDataManager();
+        System.out.println("Quantos registros deseja visualizar?");
+        int n = readNumber(1);
+        List<?> rank = null;
+        switch (input){
+            case 1:
+                rank = dm.lastNBorrows(n);
+                break;
+            case 2:
+                rank = dm.borrowsLastNDays(n);
+                break;
+            case 3:
+                rank = dm.mostNBorrowers(n);
+                break;
+            case 4:
+                rank = dm.mostNBorrowedBooks(n);
+                break;
+            case 5:
+                rank = dm.mostNPopularAuthors(n);
+                break;
+            case 6:
+                rank = dm.mostNPopularTypes(n);
+                break;
+            case 7:
+                return;
+        }
+        int count = 1;
+        for(Object entity : rank){
+            System.out.println(count++ + ": "+entity);
+        }
+        System.out.println("");
+    }
+
+    private void printRegisterMenu(){
+        System.out.println("O que deseja cadastrar?");
+        System.out.println("1 - Estudante");
+        System.out.println("2 - Livro");
+        System.out.println("3 - Estilo");
+        System.out.println("4 - Autor");
+    }
+
+    private void register(int esc){
+        DataManager dm = DataManager.getDataManager();
+        switch (esc){
+            case 1:
+
         }
     }
 }

@@ -1,25 +1,46 @@
 package library.entities;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Borrow implements Serializable {
     public static final long serialVersionUID = 3000L;
 
+    private static int lastId = 1;
+
     private int borrowId;
     private int studentId;
     private int bookId;
-    private LocalDate takenDate;
-    private LocalDate broughtDate;
+    private LocalDateTime takenDate;
+    private LocalDateTime broughtDate;
     private Student student;
     private Book book;
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy 'às' HH:mm:ss");
 
-    public Borrow(int borrowId, int studentId, int bookId, LocalDate takenDate, LocalDate broughtDate) {
+    public Borrow(int borrowId, int studentId, int bookId, LocalDateTime takenDate, LocalDateTime broughtDate) {
         this.borrowId = borrowId;
         this.studentId = studentId;
         this.bookId = bookId;
         this.takenDate = takenDate;
         this.broughtDate = broughtDate;
+        if(lastId < borrowId) lastId = borrowId;
+    }
+
+    public Borrow(int studentId, int bookId, LocalDateTime takenDate, LocalDateTime broughtDate) {
+        this.borrowId = ++lastId;
+        this.studentId = studentId;
+        this.bookId = bookId;
+        this.takenDate = takenDate;
+        this.broughtDate = broughtDate;
+    }
+
+    public Borrow(int studentId, int bookId, LocalDateTime takenDate) {
+        this.borrowId = ++lastId;
+        this.studentId = studentId;
+        this.bookId = bookId;
+        this.takenDate = takenDate;
+        this.broughtDate = null;
     }
 
     public int getBorrowId() {
@@ -34,11 +55,11 @@ public class Borrow implements Serializable {
         return bookId;
     }
 
-    public LocalDate getTakenDate() {
+    public LocalDateTime getTakenDate() {
         return takenDate;
     }
 
-    public LocalDate getBroughtDate() {
+    public LocalDateTime getBroughtDate() {
         return broughtDate;
     }
 
@@ -58,5 +79,11 @@ public class Borrow implements Serializable {
     public void setBook(Book book) {
         this.book = book;
         this.bookId = book.getBookId();
+    }
+
+    @Override
+    public String toString(){
+        return String.format("Empréstimo realizado por %s(id: %d) no dia %s, o livro pego foi %s(id: %d)",
+                student.getName(), studentId, takenDate.format(formatter), book.getName(), bookId);
     }
 }

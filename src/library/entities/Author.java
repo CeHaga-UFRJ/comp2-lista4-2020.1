@@ -5,6 +5,8 @@ import java.io.Serializable;
 public class Author implements Serializable {
     public static final long serialVersionUID = 1000L;
 
+    private static int lastId = 1;
+
     private int authorId;
     private String name;
     private String surname;
@@ -14,6 +16,13 @@ public class Author implements Serializable {
         this.authorId = authorId;
         this.name = name;
         this.surname = surname;
+        if(lastId < authorId) lastId = authorId;
+    }
+
+    public Author(String name, String surname){
+        this.name = name;
+        this.surname = surname;
+        this.authorId = ++lastId;
     }
 
     public int getAuthorId() {
@@ -34,5 +43,10 @@ public class Author implements Serializable {
 
     public void addTimesBorrowed() {
         this.timesBorrowed++;
+    }
+
+    @Override
+    public String toString(){
+        return String.format("%s %s. Foi pego emprestado %d vezes", name, surname, timesBorrowed);
     }
 }

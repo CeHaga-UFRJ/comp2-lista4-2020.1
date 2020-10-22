@@ -5,6 +5,7 @@ import library.entities.*;
 import library.files.BaseReader;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,7 +99,7 @@ public class DataManager {
 
     public List<Borrow> borrowsLastNDays(int n){
         List<Borrow> rank = new ArrayList<>();
-        LocalDate day = LocalDate.now().minusDays(n);
+        LocalDateTime day = LocalDateTime.now().minusDays(n);
         for(Borrow borrow : borrows){
             if(borrow.getTakenDate().isBefore(day)) break;
             rank.add(borrow);
@@ -133,4 +134,5 @@ public class DataManager {
         rank.sort(new MostPopularTypesComparator());
         return rank;
     }
+
 }
