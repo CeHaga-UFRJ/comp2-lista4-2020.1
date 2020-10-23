@@ -1,6 +1,7 @@
 package library.entities;
 
 import java.io.Serializable;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -83,7 +84,9 @@ public class Borrow implements Serializable {
 
     @Override
     public String toString(){
-        return String.format("Empréstimo realizado por %s(id: %d) no dia %s, o livro pego foi %s(id: %d)",
-                student.getName(), studentId, takenDate.format(formatter), book.getName(), bookId);
+        LocalDateTime last = broughtDate;
+        if(last == null) last = LocalDateTime.now();
+        return String.format("Empréstimo realizado por %s(id: %d) no dia %s, o livro pego foi %s(id: %d) e ficou %d dias",
+                student.getName(), studentId, takenDate.format(formatter), book.getName(), bookId, Duration.between(takenDate, last).toDays());
     }
 }

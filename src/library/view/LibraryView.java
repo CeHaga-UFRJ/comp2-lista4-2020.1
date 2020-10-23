@@ -86,7 +86,7 @@ public class LibraryView {
     private void printStatsMenu(){
         System.out.println("Qual estatística gostaria de consultar?");
         System.out.println("\t1 - Últimos empréstimos");
-        System.out.println("\t2 - Empréstimos nos últimos Dias");
+        System.out.println("\t2 - Empréstimos por duração");
         System.out.println("\t3 - Estudantes que mais pegam emprestado");
         System.out.println("\t4 - Livros mais emprestados");
         System.out.println("\t5 - Autores mais populares");
@@ -97,7 +97,8 @@ public class LibraryView {
     private void stats(int input){
         if(input == 7) return;
         DataManager dm = DataManager.getDataManager();
-        System.out.println("Quantos registros deseja visualizar?");
+        if(input != 2) System.out.println("Quantos registros deseja visualizar?");
+        else System.out.println("Quantos dias de empréstimo no mínimo?");
         int n = readNumber(1);
         List<?> rank = null;
         switch (input){
@@ -105,7 +106,7 @@ public class LibraryView {
                 rank = dm.lastNBorrows(n);
                 break;
             case 2:
-                rank = dm.borrowsLastNDays(n);
+                rank = dm.borrowsNDays(n);
                 break;
             case 3:
                 rank = dm.mostNBorrowers(n);
@@ -133,15 +134,13 @@ public class LibraryView {
         System.out.println("O que deseja cadastrar?");
         System.out.println("1 - Estudante");
         System.out.println("2 - Livro");
-        System.out.println("3 - Estilo");
-        System.out.println("4 - Autor");
     }
 
     private void register(int esc){
         DataManager dm = DataManager.getDataManager();
         switch (esc){
             case 1:
-
+                
         }
     }
 }

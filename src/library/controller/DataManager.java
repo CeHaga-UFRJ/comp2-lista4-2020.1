@@ -6,8 +6,7 @@ import library.files.BaseReader;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Fachada para armazenar todos os dados do programa
@@ -22,20 +21,53 @@ public class DataManager {
     private List<Borrow> borrows;
 
     private DataManager(){
-        BaseReader br = new BaseReader();
+
+    }
+
+    public static DataManager getDataManager() {
+        if(dataManager == null) dataManager = new DataManager();
+        return dataManager;
+    }
+
+    public List<Type> getTypes(){
+        if(types != null) return new ArrayList<>(types);
+        BaseReader br = BaseReader.getBaseReader();
         types = br.readType();
+        return new ArrayList<>(types);
+    }
+
+    public List<Author> getAuthors(){
+        if(authors != null) return new ArrayList<>(authors);
+        BaseReader br = BaseReader.getBaseReader();
         authors = br.readAuthor();
+        return new ArrayList<>(authors);
+    }
+
+    public List<Student> getStudents(){
+        if(students != null) return new ArrayList<>(students);
+        BaseReader br = BaseReader.getBaseReader();
         students = br.readStudent();
+        return new ArrayList<>(students);
+    }
+
+    public List<Book> getBooks(){
+        if(books != null) return new ArrayList<>(books);
+        BaseReader br = BaseReader.getBaseReader();
+        types = getTypes();
+        authors = getAuthors();
         books = br.readBook();
         for(Book book : books){
-            try {
-                book.setAuthor(getAuthorById(book.getAuthorId()));
-                book.setType(getTypeById(book.getTypeId()));
-            }catch (Exception e){
-                System.err.println("Erro no livro "+book.getName());
-                e.printStackTrace();
-            }
+            book.setAuthor(getAuthorById(book.getAuthorId()));
+            book.setType(getTypeById(book.getTypeId()));
         }
+        return new ArrayList<>(books);
+    }
+
+    public List<Borrow> getBorrows(){
+        if(borrows != null) return borrows;
+        BaseReader br = BaseReader.getBaseReader();
+        students = getStudents();
+        books = getBooks();
         borrows = br.readBorrow();
         for(Borrow borrow : borrows){
             borrow.setBook(getBookById(borrow.getBookId()));
@@ -45,20 +77,11 @@ public class DataManager {
             borrow.getBook().getAuthor().addTimesBorrowed();
             borrow.getBook().getType().addTimesBorrowed();
         }
-
-        types.sort(new MostPopularTypesComparator());
-        authors.sort(new MostPopularAuthorsComparator());
-        students.sort(new MostBorrowerStudentsComparator());
-        books.sort(new MostBorrowedBooksComparator());
-        borrows.sort(new MostRecentBorrowComparator());
-    }
-
-    public static DataManager getDataManager() {
-        if(dataManager == null) dataManager = new DataManager();
-        return dataManager;
+        return borrows;
     }
 
     public Student getStudentById(int i) {
+        if(students == null);
         try{
             return students.get(i-1);
         }catch (IndexOutOfBoundsException e){
@@ -91,48 +114,27 @@ public class DataManager {
     }
 
     public List<Borrow> lastNBorrows(int n){
-        int min = n < borrows.size() ? n : borrows.size();
-        List<Borrow> rank = new ArrayList<>(borrows.subList(0,min));
-        rank.sort(new MostRecentBorrowComparator());
-        return rank;
+        return StatsManager.getStatsManager().lastNBorrowsRank(n);
     }
 
-    public List<Borrow> borrowsLastNDays(int n){
-        List<Borrow> rank = new ArrayList<>();
-        LocalDateTime day = LocalDateTime.now().minusDays(n);
-        for(Borrow borrow : borrows){
-            if(borrow.getTakenDate().isBefore(day)) break;
-            rank.add(borrow);
-        }
-        return rank;
+    public List<Borrow> borrowsNDays(int n){
+        return StatsManager.getStatsManager().borrowsNDaysRank(n);
     }
 
     public List<Student> mostNBorrowers(int n){
-        int min = n < students.size() ? n : students.size();
-        List<Student> rank = new ArrayList<>(students.subList(0, min));
-        rank.sort(new MostBorrowerStudentsComparator());
-        return rank;
+        return StatsManager.getStatsManager().mostNBorrowerStudentRank(n);
     }
 
     public List<Book> mostNBorrowedBooks(int n){
-        int min = n < books.size() ? n : books.size();
-        List<Book> rank = new ArrayList<>(books.subList(0, min));
-        rank.sort(new MostBorrowedBooksComparator());
-        return rank;
+        return StatsManager.getStatsManager().mostNPopularBooksRank(n);
     }
 
     public List<Author> mostNPopularAuthors(int n){
-        int min = n < authors.size() ? n : authors.size();
-        List<Author> rank = new ArrayList<>(authors.subList(0, min));
-        rank.sort(new MostPopularAuthorsComparator());
-        return rank;
+        return StatsManager.getStatsManager().mostNPopularAuthorsRank(n);
     }
 
     public List<Type> mostNPopularTypes(int n){
-        int min = n < types.size() ? n : types.size();
-        List<Type> rank = new ArrayList<>(types.subList(0, min));
-        rank.sort(new MostPopularTypesComparator());
-        return rank;
+        return StatsManager.getStatsManager().mostNPopularTypes(n);
     }
 
 }

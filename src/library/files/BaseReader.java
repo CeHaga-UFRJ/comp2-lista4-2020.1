@@ -8,6 +8,17 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class BaseReader {
+    private static BaseReader baseReader;
+
+    private BaseReader(){
+
+    }
+
+    public static BaseReader getBaseReader(){
+        if(baseReader == null) baseReader = new BaseReader();
+        return baseReader;
+    }
+
     public List<Type> readType() {
         List<Type> types = new ArrayList<Type>();
         File file = new File("resources/data/types.ser");
@@ -23,18 +34,17 @@ public class BaseReader {
                 e.printStackTrace();
             }
         }
-        try(BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("resources/base/types.csv")))){
+        try(BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("resources/base/types.tsv")))){
             br.readLine(); //Cabecalho
             String line;
             while((line = br.readLine()) != null){
-                String formattedLine = line.substring(1,line.length()-1);
-                String[] data = formattedLine.split("\",\"");
+                String[] data = line.split("\t");
                 int typeId = Integer.parseInt(data[0]);
                 String name = data[1];
                 types.add(new Type(typeId, name));
             }
         }catch (IOException e){
-            System.err.println("Erro ao abrir arquivo types.csv");
+            System.err.println("Erro ao abrir arquivo types.tsv");
             e.printStackTrace();
             return null;
         }
@@ -56,19 +66,18 @@ public class BaseReader {
                 e.printStackTrace();
             }
         }
-        try(BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("resources/base/authorsFull.csv")))){
+        try(BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("resources/base/authorsFull.tsv")))){
             br.readLine(); //Cabecalho
             String line;
             while((line = br.readLine()) != null){
-                String formattedLine = line.substring(1,line.length()-1);
-                String[] data = formattedLine.split("\",\"");
+                String[] data = line.split("\t");
                 int authorId = Integer.parseInt(data[0]);
                 String name = data[1];
                 String surname = data[2];
                 authors.add(new Author(authorId, name, surname));
             }
         }catch (IOException e){
-            System.err.println("Erro ao abrir arquivo authorsFull.csv");
+            System.err.println("Erro ao abrir arquivo authorsFull.tsv");
             e.printStackTrace();
             return null;
         }
@@ -90,12 +99,11 @@ public class BaseReader {
                 e.printStackTrace();
             }
         }
-        try(BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("resources/base/students.csv")))){
+        try(BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("resources/base/students.tsv")))){
             br.readLine(); //Cabecalho
             String line;
             while((line = br.readLine()) != null){
-                String formattedLine = line.substring(1,line.length()-1);
-                String[] data = formattedLine.split("\",\"");
+                String[] data = line.split("\t");
                 int studentId = Integer.parseInt(data[0]);
                 String name = data[1];
                 String surname = data[2];
@@ -106,7 +114,7 @@ public class BaseReader {
                 students.add(new Student(studentId, name, surname, birthdate, gender, classCode, points));
             }
         }catch (IOException e){
-            System.err.println("Erro ao abrir arquivo students.csv");
+            System.err.println("Erro ao abrir arquivo students.tsv");
             e.printStackTrace();
             return null;
         }
@@ -114,6 +122,7 @@ public class BaseReader {
     }
 
     public List<Book> readBook(){
+        System.out.println("books");
         List<Book> books = new ArrayList<Book>();
         File file = new File("resources/data/books.ser");
         if(file.exists()){
@@ -128,12 +137,11 @@ public class BaseReader {
                 e.printStackTrace();
             }
         }
-        try(BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("resources/base/books.csv")))){
+        try(BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("resources/base/books.tsv")))){
             br.readLine(); //Cabecalho
             String line;
             while((line = br.readLine()) != null){
-                String formattedLine = line.substring(1,line.length()-1);
-                String[] data = formattedLine.split("\",\"");
+                String[] data = line.split("\t");
                 int bookId = Integer.parseInt(data[0]);
                 String name = data[1];
                 int pageCount = Integer.parseInt(data[2]);
@@ -143,7 +151,7 @@ public class BaseReader {
                 books.add(new Book(bookId, name, pageCount, points, authorId, typeId));
             }
         }catch (IOException e){
-            System.err.println("Erro ao abrir arquivo books.csv");
+            System.err.println("Erro ao abrir arquivo books.tsv");
             e.printStackTrace();
             return null;
         }
@@ -151,6 +159,7 @@ public class BaseReader {
     }
 
     public List<Borrow> readBorrow(){
+        System.out.println("borrow");
         List<Borrow> borrows = new ArrayList<>();
         File file = new File("resources/data/borrows.ser");
         if(file.exists()){
@@ -165,13 +174,12 @@ public class BaseReader {
                 e.printStackTrace();
             }
         }
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        try(BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("resources/base/borrows.csv")))){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy HH:mm");
+        try(BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream("resources/base/borrows.tsv")))){
             br.readLine(); //Cabecalho
             String line;
             while((line = br.readLine()) != null){
-                String formattedLine = line.substring(1,line.length()-1);
-                String[] data = formattedLine.split("\",\"");
+                String[] data = line.split("\t");
                 int borrowId = Integer.parseInt(data[0]);
                 int studentId = Integer.parseInt(data[1]);
                 int bookId = Integer.parseInt(data[2]);
@@ -180,7 +188,7 @@ public class BaseReader {
                 borrows.add(new Borrow(borrowId, studentId, bookId, takenDate, broughtDate));
             }
         }catch (IOException e){
-            System.err.println("Erro ao abrir arquivo borrows.csv");
+            System.err.println("Erro ao abrir arquivo borrows.tsv");
             e.printStackTrace();
             return null;
         }
