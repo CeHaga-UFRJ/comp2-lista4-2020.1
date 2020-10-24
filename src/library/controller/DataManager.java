@@ -81,36 +81,64 @@ public class DataManager {
     }
 
     public Student getStudentById(int i) {
-        if(students == null);
+        List<Student> students = getStudents();
         try{
             return students.get(i-1);
         }catch (IndexOutOfBoundsException e){
+            return null;
+        }catch (NullPointerException e){
             return null;
         }
     }
 
     public Book getBookById(int i) {
+        List<Book> books = getBooks();
         try{
             return books.get(i-1);
         }catch (IndexOutOfBoundsException e){
+            return null;
+        }catch (NullPointerException e){
             return null;
         }
     }
 
     public Author getAuthorById(int i) {
+        List<Author> authors = getAuthors();
         try{
             return authors.get(i-1);
         }catch (IndexOutOfBoundsException e){
             return null;
+        }catch (NullPointerException e){
+            return null;
         }
     }
 
+    public List<Author> getAuthorBySurname(String surname){
+        List<Author> searchAuthors = new ArrayList<>();
+        List<Author> authors = getAuthors();
+        for(Author author : authors){
+            if(author.getSurname().equals(surname)) searchAuthors.add(author);
+        }
+        return searchAuthors;
+    }
+
     public Type getTypeById(int i) {
+        List<Type> types = getTypes();
         try{
             return types.get(i-1);
         }catch (IndexOutOfBoundsException e){
             return null;
+        }catch (NullPointerException e){
+            return null;
         }
+    }
+
+    public Type getTypeByName(String name){
+        List<Type> types = getTypes();
+        for(Type type : types){
+            if(type.getName().equals(name)) return type;
+        }
+        return null;
     }
 
     public List<Borrow> lastNBorrows(int n){
@@ -137,4 +165,31 @@ public class DataManager {
         return StatsManager.getStatsManager().mostNPopularTypes(n);
     }
 
+    public Student registerStudent(String name, String surname, LocalDate birthdate, char gender, String classCode, int points){
+        students = getStudents();
+        Student student = new Student(name, surname, birthdate, gender, classCode, points);
+        students.add(student);
+        return student;
+    }
+
+    public Book registerBook(String name, int pageCount, int point, Author author, Type type){
+        books = getBooks();
+        Book book = new Book(name, pageCount, point, author, type);
+        books.add(book);
+        return book;
+    }
+
+    public Author registerAuthor(String name, String surname){
+        authors = getAuthors();
+        Author author = new Author(name, surname);
+        authors.add(author);
+        return author;
+    }
+
+    public Type registerType(String name){
+        types = getTypes();
+        Type type = new Type(name);
+        types.add(type);
+        return type;
+    }
 }

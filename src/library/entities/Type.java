@@ -40,6 +40,6 @@ public class Type implements Serializable {
 
     @Override
     public String toString(){
-        return String.format("%s. Pego emprestado %d vezes", name, timesBorrowed);
+        return String.format("%s (id: %d). Esse estilo foi pego emprestado %d vezes", name, typeId, timesBorrowed);
     }
 }

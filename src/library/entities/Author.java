@@ -47,6 +47,6 @@ public class Author implements Serializable {
 
     @Override
     public String toString(){
-        return String.format("%s %s. Foi pego emprestado %d vezes", name, surname, timesBorrowed);
+        return String.format("%s %s(id : %d). Foi pego emprestado %d vezes", name, surname, authorId, timesBorrowed);
     }
 }

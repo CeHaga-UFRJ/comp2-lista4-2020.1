@@ -86,7 +86,7 @@ public class Borrow implements Serializable {
     public String toString(){
         LocalDateTime last = broughtDate;
         if(last == null) last = LocalDateTime.now();
-        return String.format("Empréstimo realizado por %s(id: %d) no dia %s, o livro pego foi %s(id: %d) e ficou %d dias",
-                student.getName(), studentId, takenDate.format(formatter), book.getName(), bookId, Duration.between(takenDate, last).toDays());
+        return String.format("Empréstimo realizado por %s %s(id: %d) no dia %s, o livro pego foi %s(id: %d) e ficou %d dias",
+                student.getName(), student.getSurname(), studentId, takenDate.format(formatter), book.getName(), bookId, Duration.between(takenDate, last).toDays());
     }
 }

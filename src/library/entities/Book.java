@@ -27,13 +27,13 @@ public class Book implements Serializable {
         if(lastId < bookId) lastId = bookId;
     }
 
-    public Book(String name, int pageCount, int point, int authorId, int typeId) {
+    public Book(String name, int pageCount, int point, Author author, Type type) {
         this.bookId = ++lastId;
         this.name = name;
         this.pageCount = pageCount;
         this.point = point;
-        this.authorId = authorId;
-        this.typeId = typeId;
+        setAuthor(author);
+        setType(type);
     }
 
     public int getBookId() {
@@ -88,7 +88,7 @@ public class Book implements Serializable {
 
     @Override
     public String toString(){
-        return String.format("%s(id: %d), escrito por %s %s. Foi pego emprestado %d vezes",
-                name, bookId, author.getName(), author.getSurname(), timesBorrowed);
+        return String.format("%s(id: %d), escrito por %s %s(id: %d). Foi pego emprestado %d vezes",
+                name, bookId, author.getName(), author.getSurname(), authorId, timesBorrowed);
     }
 }

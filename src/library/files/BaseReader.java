@@ -20,7 +20,7 @@ public class BaseReader {
     }
 
     public List<Type> readType() {
-        List<Type> types = new ArrayList<Type>();
+        List<Type> types = new ArrayList<>();
         File file = new File("resources/data/types.ser");
         if(file.exists()){
             try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("resources/data/types.ser"))) {
@@ -52,7 +52,7 @@ public class BaseReader {
     }
 
     public List<Author> readAuthor(){
-        List<Author> authors = new ArrayList<Author>();
+        List<Author> authors = new ArrayList<>();
         File file = new File("resources/data/authors.ser");
         if(file.exists()){
             try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("resources/data/authors.ser"))) {
@@ -85,7 +85,7 @@ public class BaseReader {
     }
 
     public List<Student> readStudent(){
-        List<Student> students = new ArrayList<Student>();
+        List<Student> students = new ArrayList<>();
         File file = new File("resources/data/students.ser");
         if(file.exists()){
             try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("resources/data/students.ser"))) {
@@ -122,8 +122,7 @@ public class BaseReader {
     }
 
     public List<Book> readBook(){
-        System.out.println("books");
-        List<Book> books = new ArrayList<Book>();
+        List<Book> books = new ArrayList<>();
         File file = new File("resources/data/books.ser");
         if(file.exists()){
             try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("resources/data/books.ser"))) {
@@ -159,7 +158,6 @@ public class BaseReader {
     }
 
     public List<Borrow> readBorrow(){
-        System.out.println("borrow");
         List<Borrow> borrows = new ArrayList<>();
         File file = new File("resources/data/borrows.ser");
         if(file.exists()){
