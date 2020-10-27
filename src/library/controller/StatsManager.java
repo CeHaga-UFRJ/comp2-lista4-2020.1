@@ -2,28 +2,30 @@ package library.controller;
 
 import library.comparators.*;
 import library.entities.*;
+import library.interfaces.LibraryListeners;
+import library.interfaces.Notifiable;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 
-class StatsManager {
+class StatsManager implements LibraryListeners {
     private static StatsManager statsManager;
 
-    private TreeSet<Author> mostPopularAuthor;
-    private TreeSet<Type> mostPopularType;
-    private TreeSet<Student> mostBorrowerStudent;
-    private TreeSet<Book> mostPopularBook;
-    private TreeSet<Borrow> lastNBorrows;
-    private TreeSet<Borrow> borrowsNDays;
+    private final TreeSet<Author> mostPopularAuthor;
+    private final TreeSet<Type> mostPopularType;
+    private final TreeSet<Student> mostBorrowerStudent;
+    private final TreeSet<Book> mostPopularBook;
+    private final TreeSet<Borrow> lastNBorrows;
+    private final TreeSet<Borrow> borrowsNDays;
 
     private StatsManager(){
-        mostPopularAuthor = new TreeSet<Author>(new MostPopularAuthorsComparator());
-        mostPopularType = new TreeSet<Type>(new MostPopularTypesComparator());
-        mostPopularBook = new TreeSet<Book>(new MostBorrowedBooksComparator());
-        mostBorrowerStudent = new TreeSet<Student>(new MostBorrowerStudentsComparator());
-        lastNBorrows = new TreeSet<Borrow>(new MostRecentBorrowComparator());
-        borrowsNDays = new TreeSet<Borrow>(new MostDaysBorrowComparator());
+        mostPopularAuthor = new TreeSet<>(new MostPopularAuthorsComparator());
+        mostPopularType = new TreeSet<>(new MostPopularTypesComparator());
+        mostPopularBook = new TreeSet<>(new MostBorrowedBooksComparator());
+        mostBorrowerStudent = new TreeSet<>(new MostBorrowerStudentsComparator());
+        lastNBorrows = new TreeSet<>(new MostRecentBorrowComparator());
+        borrowsNDays = new TreeSet<>(new MostDaysBorrowComparator());
     }
 
     public static StatsManager getStatsManager() {
@@ -32,52 +34,87 @@ class StatsManager {
     }
 
     public List<Author> getMostPopularAuthor() {
-        if(!mostPopularAuthor.isEmpty()) return new ArrayList<>(mostPopularAuthor);
+        if(!mostPopularAuthor.isEmpty()){
+            List<Author> mostPopularAuthorList = new ArrayList<>(mostPopularAuthor);
+            mostPopularAuthorList.sort(mostPopularAuthor.comparator());
+            return mostPopularAuthorList;
+        }
         DataManager dm = DataManager.getDataManager();
-        mostPopularAuthor.addAll(dm.getAuthors());
-        return new ArrayList<>(mostPopularAuthor);
+        mostPopularAuthor.addAll(dm.getAuthors().values());
+        List<Author> mostPopularAuthorList = new ArrayList<>(mostPopularAuthor);
+        mostPopularAuthorList.sort(mostPopularAuthor.comparator());
+        return mostPopularAuthorList;
     }
 
     public List<Type> getMostPopularType() {
-        if(!mostPopularType.isEmpty()) return new ArrayList<>(mostPopularType);
+        if(!mostPopularType.isEmpty()){
+            List<Type> mostPopularTypeList = new ArrayList<>(mostPopularType);
+            mostPopularTypeList.sort(mostPopularType.comparator());
+            return mostPopularTypeList;
+        }
         DataManager dm = DataManager.getDataManager();
-        mostPopularType.addAll(dm.getTypes());
-        return new ArrayList<>(mostPopularType);
+        mostPopularType.addAll(dm.getTypes().values());
+        List<Type> mostPopularTypeList = new ArrayList<>(mostPopularType);
+        mostPopularTypeList.sort(mostPopularType.comparator());
+        return mostPopularTypeList;
     }
 
     public List<Student> getMostBorrowerStudent() {
-        if(!mostBorrowerStudent.isEmpty()) return new ArrayList<>(mostBorrowerStudent);
+        if(!mostBorrowerStudent.isEmpty()){
+            List<Student> mostBorrowerStudentList = new ArrayList<>(mostBorrowerStudent);
+            mostBorrowerStudentList.sort(mostBorrowerStudent.comparator());
+            return mostBorrowerStudentList;
+        }
         DataManager dm = DataManager.getDataManager();
-        mostBorrowerStudent.addAll(dm.getStudents());
-        return new ArrayList<>(mostBorrowerStudent);
+        mostBorrowerStudent.addAll(dm.getStudents().values());
+        List<Student> mostBorrowerStudentList = new ArrayList<>(mostBorrowerStudent);
+        mostBorrowerStudentList.sort(mostBorrowerStudent.comparator());
+        return mostBorrowerStudentList;
     }
 
     public List<Book> getMostPopularBook() {
-        if(!mostPopularBook.isEmpty()) return new ArrayList<>(mostPopularBook);
+        if(!mostPopularBook.isEmpty()){
+            List<Book> mostPopularBookList = new ArrayList<>(mostPopularBook);
+            mostPopularBookList.sort(mostPopularBook.comparator());
+            return mostPopularBookList;
+        }
         DataManager dm = DataManager.getDataManager();
-        mostPopularBook.addAll(dm.getBooks());
-        return new ArrayList<>(mostPopularBook);
+        mostPopularBook.addAll(dm.getBooks().values());
+        List<Book> mostPopularBookList = new ArrayList<>(mostPopularBook);
+        mostPopularBookList.sort(mostPopularBook.comparator());
+        return mostPopularBookList;
     }
 
     public List<Borrow> getLastNBorrows() {
-        if(!lastNBorrows.isEmpty()) return new ArrayList<>(lastNBorrows);
+        if(!lastNBorrows.isEmpty()){
+            List<Borrow> lastNBorrowsList = new ArrayList<>(lastNBorrows);
+            lastNBorrowsList.sort(lastNBorrows.comparator());
+            return lastNBorrowsList;
+        }
         DataManager dm = DataManager.getDataManager();
-        lastNBorrows.addAll(dm.getBorrows());
-        return new ArrayList<>(lastNBorrows);
+        lastNBorrows.addAll(dm.getBorrows().values());
+        List<Borrow> lastNBorrowsList = new ArrayList<>(lastNBorrows);
+        lastNBorrowsList.sort(lastNBorrows.comparator());
+        return lastNBorrowsList;
     }
 
     public List<Borrow> getBorrowsNDays() {
-        if(!borrowsNDays.isEmpty()) return new ArrayList<>(borrowsNDays);
+        if(!borrowsNDays.isEmpty()){
+            List<Borrow> borrowsNDaysList = new ArrayList<>(borrowsNDays);
+            borrowsNDaysList.sort(borrowsNDays.comparator());
+            return borrowsNDaysList;
+        }
         DataManager dm = DataManager.getDataManager();
-        borrowsNDays.addAll(dm.getBorrows());
-        return new ArrayList<>(borrowsNDays);
+        borrowsNDays.addAll(dm.getBorrows().values());
+        List<Borrow> borrowsNDaysList = new ArrayList<>(borrowsNDays);
+        borrowsNDaysList.sort(borrowsNDays.comparator());
+        return borrowsNDaysList;
     }
 
     public List<Borrow> lastNBorrowsRank(int n){
         List<Borrow> borrows = getLastNBorrows();
-        int min = n < borrows.size() ? n : borrows.size();
-        List<Borrow> rank = new ArrayList<>(borrows.subList(0,min));
-        return rank;
+        int min = Math.min(n, borrows.size());
+        return new ArrayList<>(borrows.subList(0,min));
     }
 
     public List<Borrow> borrowsNDaysRank(int n){
@@ -95,29 +132,51 @@ class StatsManager {
 
     public List<Student> mostNBorrowerStudentRank(int n){
         List<Student> students = getMostBorrowerStudent();
-        int min = n < students.size() ? n : students.size();
-        List<Student> rank = new ArrayList<>(students.subList(0, min));
-        return rank;
+        int min = Math.min(n, students.size());
+        return new ArrayList<>(students.subList(0, min));
     }
 
     public List<Book> mostNPopularBooksRank(int n){
         List<Book> books = getMostPopularBook();
-        int min = n < books.size() ? n : books.size();
-        List<Book> rank = new ArrayList<>(books.subList(0, min));
-        return rank;
+        int min = Math.min(n, books.size());
+        return new ArrayList<>(books.subList(0, min));
     }
 
     public List<Author> mostNPopularAuthorsRank(int n){
         List<Author> authors = getMostPopularAuthor();
-        int min = n < authors.size() ? n : authors.size();
-        List<Author> rank = new ArrayList<>(authors.subList(0, min));
-        return rank;
+        int min = Math.min(n, authors.size());
+        return new ArrayList<>(authors.subList(0, min));
     }
 
     public List<Type> mostNPopularTypes(int n){
         List<Type> types = getMostPopularType();
-        int min = n < types.size() ? n : types.size();
-        List<Type> rank = new ArrayList<>(types.subList(0, min));
-        return rank;
+        int min = Math.min(n, types.size());
+        return new ArrayList<>(types.subList(0, min));
+    }
+
+    @Override
+    public void update(Notifiable data) {
+        if(data instanceof Borrow){
+            getLastNBorrows();
+            getBorrowsNDays();
+            borrowsNDays.add((Borrow)data);
+            lastNBorrows.add((Borrow)data);
+        }
+        if(data instanceof Book){
+            getMostPopularBook();
+            mostPopularBook.add((Book)data);
+        }
+        if(data instanceof Author){
+            getMostPopularAuthor();
+            mostPopularAuthor.add((Author)data);
+        }
+        if(data instanceof Type){
+            getMostPopularType();
+            mostPopularType.add((Type)data);
+        }
+        if(data instanceof Student){
+            getMostBorrowerStudent();
+            mostBorrowerStudent.add((Student)data);
+        }
     }
 }

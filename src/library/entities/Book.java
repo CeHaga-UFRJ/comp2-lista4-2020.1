@@ -1,8 +1,10 @@
 package library.entities;
 
+import library.interfaces.Notifiable;
+
 import java.io.Serializable;
 
-public class Book implements Serializable {
+public class Book implements Serializable, Notifiable {
     public static final long serialVersionUID = 2000L;
 
     private static int lastId = 1;
@@ -16,6 +18,7 @@ public class Book implements Serializable {
     private Author author;
     private Type type;
     private int timesBorrowed;
+    private int actualCopies;
 
     public Book(int bookId, String name, int pageCount, int point, int authorId, int typeId) {
         this.bookId = bookId;
@@ -24,6 +27,7 @@ public class Book implements Serializable {
         this.point = point;
         this.authorId = authorId;
         this.typeId = typeId;
+        actualCopies = 2;
         if(lastId < bookId) lastId = bookId;
     }
 
@@ -34,6 +38,7 @@ public class Book implements Serializable {
         this.point = point;
         setAuthor(author);
         setType(type);
+        actualCopies = 2;
     }
 
     public int getBookId() {
@@ -84,6 +89,18 @@ public class Book implements Serializable {
 
     public void addTimesBorrowed() {
         this.timesBorrowed++;
+    }
+
+    public void addActualCopies(){
+        this.actualCopies++;
+    }
+
+    public void removeActualCopies(){
+        this.actualCopies--;
+    }
+
+    public int getActualCopies(){
+        return actualCopies;
     }
 
     @Override

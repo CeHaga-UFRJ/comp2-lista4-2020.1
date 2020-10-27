@@ -1,11 +1,13 @@
 package library.entities;
 
+import library.interfaces.Notifiable;
+
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class Borrow implements Serializable {
+public class Borrow implements Serializable, Notifiable {
     public static final long serialVersionUID = 3000L;
 
     private static int lastId = 1;
@@ -17,7 +19,7 @@ public class Borrow implements Serializable {
     private LocalDateTime broughtDate;
     private Student student;
     private Book book;
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy 'às' HH:mm:ss");
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy 'às' HH:mm");
 
     public Borrow(int borrowId, int studentId, int bookId, LocalDateTime takenDate, LocalDateTime broughtDate) {
         this.borrowId = borrowId;
@@ -28,20 +30,28 @@ public class Borrow implements Serializable {
         if(lastId < borrowId) lastId = borrowId;
     }
 
-    public Borrow(int studentId, int bookId, LocalDateTime takenDate, LocalDateTime broughtDate) {
+    public Borrow(Student student, Book book, LocalDateTime takenDate, LocalDateTime broughtDate) {
         this.borrowId = ++lastId;
-        this.studentId = studentId;
-        this.bookId = bookId;
+        setStudent(student);
+        setBook(book);
         this.takenDate = takenDate;
         this.broughtDate = broughtDate;
+        student.addBorrowedBooks();
+        book.addTimesBorrowed();
+        book.getType().addTimesBorrowed();
+        book.getAuthor().addTimesBorrowed();
     }
 
-    public Borrow(int studentId, int bookId, LocalDateTime takenDate) {
+    public Borrow(Student student, Book book, LocalDateTime takenDate) {
         this.borrowId = ++lastId;
-        this.studentId = studentId;
-        this.bookId = bookId;
+        setStudent(student);
+        setBook(book);
         this.takenDate = takenDate;
         this.broughtDate = null;
+        student.addBorrowedBooks();
+        book.addTimesBorrowed();
+        book.getType().addTimesBorrowed();
+        book.getAuthor().addTimesBorrowed();
     }
 
     public int getBorrowId() {
@@ -82,11 +92,19 @@ public class Borrow implements Serializable {
         this.bookId = book.getBookId();
     }
 
+    public void setBroughtDate(LocalDateTime broughtDate) {
+        this.broughtDate = broughtDate;
+    }
+
     @Override
     public String toString(){
         LocalDateTime last = broughtDate;
-        if(last == null) last = LocalDateTime.now();
-        return String.format("Empréstimo realizado por %s %s(id: %d) no dia %s, o livro pego foi %s(id: %d) e ficou %d dias",
-                student.getName(), student.getSurname(), studentId, takenDate.format(formatter), book.getName(), bookId, Duration.between(takenDate, last).toDays());
+        String status = "FECHADO";
+        if(last == null){
+            last = LocalDateTime.now();
+            status = "ABERTO";
+        }
+        return String.format("Empréstimo(id:%d) realizado por %s %s(id: %d) no dia %s, o livro pego foi %s(id: %d) e ficou %d dias. Atualmente o empréstimo está: %s",
+                borrowId, student.getName(), student.getSurname(), studentId, takenDate.format(formatter), book.getName(), bookId, Duration.between(takenDate, last).toDays(), status);
     }
 }

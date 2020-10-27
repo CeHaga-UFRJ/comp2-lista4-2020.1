@@ -1,8 +1,10 @@
 package library.entities;
 
+import library.interfaces.Notifiable;
+
 import java.io.Serializable;
 
-public class Author implements Serializable {
+public class Author implements Serializable, Notifiable {
     public static final long serialVersionUID = 1000L;
 
     private static int lastId = 1;

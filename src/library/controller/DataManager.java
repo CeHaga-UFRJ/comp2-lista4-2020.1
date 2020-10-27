@@ -1,11 +1,10 @@
 package library.controller;
 
-import library.comparators.*;
 import library.entities.*;
 import library.files.BaseReader;
+import library.interfaces.Notifiable;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.util.*;
 
 /**
@@ -14,14 +13,19 @@ import java.util.*;
  */
 public class DataManager {
     private static DataManager dataManager;
-    private List<Student> students;
-    private List<Book> books;
-    private List<Author> authors;
-    private List<Type> types;
-    private List<Borrow> borrows;
+    private HashMap<Integer, Student> students;
+    private HashMap<Integer, Book> books;
+    private HashMap<Integer, Author> authors;
+    private HashMap<Integer, Type> types;
+    private HashMap<Integer, Borrow> borrows;
 
     private DataManager(){
-
+        StatsManager sm = StatsManager.getStatsManager();
+        EventManager.subscribe("book",sm);
+        EventManager.subscribe("borrow",sm);
+        EventManager.subscribe("type",sm);
+        EventManager.subscribe("student",sm);
+        EventManager.subscribe("author",sm);
     }
 
     public static DataManager getDataManager() {
@@ -29,93 +33,129 @@ public class DataManager {
         return dataManager;
     }
 
-    public List<Type> getTypes(){
-        if(types != null) return new ArrayList<>(types);
-        BaseReader br = BaseReader.getBaseReader();
-        types = br.readType();
-        return new ArrayList<>(types);
-    }
-
-    public List<Author> getAuthors(){
-        if(authors != null) return new ArrayList<>(authors);
-        BaseReader br = BaseReader.getBaseReader();
-        authors = br.readAuthor();
-        return new ArrayList<>(authors);
-    }
-
-    public List<Student> getStudents(){
-        if(students != null) return new ArrayList<>(students);
-        BaseReader br = BaseReader.getBaseReader();
-        students = br.readStudent();
-        return new ArrayList<>(students);
-    }
-
-    public List<Book> getBooks(){
-        if(books != null) return new ArrayList<>(books);
-        BaseReader br = BaseReader.getBaseReader();
+    private void readAll(){
         types = getTypes();
         authors = getAuthors();
+        students = getStudents();
+        books = getBooks();
+        borrows = getBorrows();
+    }
+
+    public HashMap<Integer, Type> getTypes(){
+        if(types != null) return new HashMap<>(types);
+        BaseReader br = BaseReader.getBaseReader();
+        types = br.readType();
+        readAll(); //Para definir o número de empréstimos
+        return new HashMap<>(types);
+    }
+
+    public HashMap<Integer, Author> getAuthors(){
+        if(authors != null) return new HashMap<>(authors);
+        BaseReader br = BaseReader.getBaseReader();
+        authors = br.readAuthor();
+        readAll(); //Para definir o número de empréstimos
+        return new HashMap<>(authors);
+    }
+
+    public HashMap<Integer, Student> getStudents(){
+        if(students != null) return new HashMap<>(students);
+        BaseReader br = BaseReader.getBaseReader();
+        students = br.readStudent();
+        readAll(); //Para definir o número de empréstimos
+        return new HashMap<>(students);
+    }
+
+    public HashMap<Integer, Book> getBooks(){
+        if(books != null) return new HashMap<>(books);
+        BaseReader br = BaseReader.getBaseReader();
         books = br.readBook();
-        for(Book book : books){
+        types = getTypes();
+        authors = getAuthors();
+        for(Book book : books.values()){
             book.setAuthor(getAuthorById(book.getAuthorId()));
             book.setType(getTypeById(book.getTypeId()));
         }
-        return new ArrayList<>(books);
+        readAll(); //Para definir o número de empréstimos
+        return new HashMap<>(books);
     }
 
-    public List<Borrow> getBorrows(){
+    public HashMap<Integer, Borrow> getBorrows(){
         if(borrows != null) return borrows;
         BaseReader br = BaseReader.getBaseReader();
-        students = getStudents();
-        books = getBooks();
         borrows = br.readBorrow();
-        for(Borrow borrow : borrows){
+        books = getBooks();
+        students = getStudents();
+        for(Borrow borrow : borrows.values()){
             borrow.setBook(getBookById(borrow.getBookId()));
             borrow.setStudent(getStudentById(borrow.getStudentId()));
             borrow.getStudent().addBorrowedBooks();
             borrow.getBook().addTimesBorrowed();
             borrow.getBook().getAuthor().addTimesBorrowed();
             borrow.getBook().getType().addTimesBorrowed();
+            if(borrow.getBroughtDate() == null){
+                borrow.getStudent().addActualBooks();
+            }
         }
+        readAll();
         return borrows;
     }
 
-    public Student getStudentById(int i) {
-        List<Student> students = getStudents();
+    public Borrow getBorrowById(int i){
+        HashMap<Integer, Borrow> borrows = getBorrows();
         try{
-            return students.get(i-1);
-        }catch (IndexOutOfBoundsException e){
-            return null;
-        }catch (NullPointerException e){
+            return borrows.get(i);
+        }catch (IndexOutOfBoundsException | NullPointerException e){
             return null;
         }
+    }
+
+    public Student getStudentById(int i) {
+        HashMap<Integer, Student> students = getStudents();
+        try{
+            return students.get(i);
+        }catch (IndexOutOfBoundsException | NullPointerException e){
+            return null;
+        }
+    }
+
+    public List<Student> getStudentBySurname(String surname){
+        List<Student> searchStudents = new ArrayList<>();
+        Collection<Student> students = getStudents().values();
+        for(Student student : students){
+            if(student.getSurname().equals(surname)) searchStudents.add(student);
+        }
+        return searchStudents;
     }
 
     public Book getBookById(int i) {
-        List<Book> books = getBooks();
+        HashMap<Integer, Book> books = getBooks();
         try{
-            return books.get(i-1);
-        }catch (IndexOutOfBoundsException e){
-            return null;
-        }catch (NullPointerException e){
+            return books.get(i);
+        }catch (IndexOutOfBoundsException | NullPointerException e){
             return null;
         }
     }
 
+    public Book getBookByName(String name){
+        Collection<Book> books = getBooks().values();
+        for(Book book : books){
+            if(book.getName().equals(name)) return book;
+        }
+        return null;
+    }
+
     public Author getAuthorById(int i) {
-        List<Author> authors = getAuthors();
+        HashMap<Integer, Author> authors = getAuthors();
         try{
-            return authors.get(i-1);
-        }catch (IndexOutOfBoundsException e){
-            return null;
-        }catch (NullPointerException e){
+            return authors.get(i);
+        }catch (IndexOutOfBoundsException | NullPointerException e){
             return null;
         }
     }
 
     public List<Author> getAuthorBySurname(String surname){
         List<Author> searchAuthors = new ArrayList<>();
-        List<Author> authors = getAuthors();
+        Collection<Author> authors = getAuthors().values();
         for(Author author : authors){
             if(author.getSurname().equals(surname)) searchAuthors.add(author);
         }
@@ -123,18 +163,16 @@ public class DataManager {
     }
 
     public Type getTypeById(int i) {
-        List<Type> types = getTypes();
+        HashMap<Integer, Type> types = getTypes();
         try{
-            return types.get(i-1);
-        }catch (IndexOutOfBoundsException e){
-            return null;
-        }catch (NullPointerException e){
+            return types.get(i);
+        }catch (IndexOutOfBoundsException | NullPointerException e){
             return null;
         }
     }
 
     public Type getTypeByName(String name){
-        List<Type> types = getTypes();
+        Collection<Type> types = getTypes().values();
         for(Type type : types){
             if(type.getName().equals(name)) return type;
         }
@@ -168,28 +206,65 @@ public class DataManager {
     public Student registerStudent(String name, String surname, LocalDate birthdate, char gender, String classCode, int points){
         students = getStudents();
         Student student = new Student(name, surname, birthdate, gender, classCode, points);
-        students.add(student);
+        students.put(student.getStudentId(), student);
+        notify("student",student);
         return student;
     }
 
     public Book registerBook(String name, int pageCount, int point, Author author, Type type){
         books = getBooks();
         Book book = new Book(name, pageCount, point, author, type);
-        books.add(book);
+        books.put(book.getBookId(), book);
+        notify("book",book);
         return book;
     }
 
     public Author registerAuthor(String name, String surname){
         authors = getAuthors();
         Author author = new Author(name, surname);
-        authors.add(author);
+        authors.put(author.getAuthorId(), author);
+        notify("author",author);
         return author;
     }
 
     public Type registerType(String name){
         types = getTypes();
         Type type = new Type(name);
-        types.add(type);
+        types.put(type.getTypeId(), type);
+        notify("type",type);
         return type;
+    }
+
+    public Borrow registerBorrow(Student student, Book book, LocalDateTime takenDate, LocalDateTime broughtDate){
+        borrows = getBorrows();
+        Borrow borrow = new Borrow(student, book, takenDate, broughtDate);
+        borrows.put(borrow.getBorrowId(), borrow);
+        student.addPoints(book.getPoint());
+        notify("borrow",borrow);
+        return borrow;
+    }
+
+    public Borrow registerBorrow(Student student, Book book, LocalDateTime takenDate){
+        borrows = getBorrows();
+        Borrow borrow = new Borrow(student, book, takenDate);
+        borrows.put(borrow.getBorrowId(), borrow);
+        student.addPoints(-book.getPoint());
+        student.addActualBooks();
+        book.removeActualCopies();
+        notify("borrow",borrow);
+        return borrow;
+    }
+
+    public void setBorrowReturn(Borrow borrow, LocalDateTime broughtDate){
+        borrow.setBroughtDate(broughtDate);
+        Student s = borrow.getStudent();
+        Book b = borrow.getBook();
+        s.addPoints(2*borrow.getBook().getPoint());
+        s.removeActualBooks();
+        b.addActualCopies();
+    }
+
+    private void notify(String type, Notifiable data){
+        EventManager.notify(type, data);
     }
 }

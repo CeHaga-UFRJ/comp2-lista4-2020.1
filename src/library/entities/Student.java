@@ -1,9 +1,11 @@
 package library.entities;
 
+import library.interfaces.Notifiable;
+
 import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Student implements Serializable {
+public class Student implements Serializable, Notifiable {
     public static final long serialVersionUID = 4000L;
 
     private static int lastId = 1;
@@ -16,6 +18,7 @@ public class Student implements Serializable {
     private String classCode;
     private int points;
     private int borrowedBooks;
+    private int actualBooks;
 
     public Student(int studentId, String name, String surname, LocalDate birthdate, char gender, String classCode, int points) {
         this.studentId = studentId;
@@ -25,6 +28,7 @@ public class Student implements Serializable {
         this.gender = gender;
         this.classCode = classCode;
         this.points = points;
+        actualBooks = 0;
         if(lastId < studentId) lastId = studentId;
     }
 
@@ -36,6 +40,7 @@ public class Student implements Serializable {
         this.gender = gender;
         this.classCode = classCode;
         this.points = points;
+        actualBooks = 0;
     }
 
     public int getStudentId() {
@@ -72,6 +77,22 @@ public class Student implements Serializable {
 
     public void addBorrowedBooks() {
         this.borrowedBooks++;
+    }
+
+    public void addPoints(int points){
+        this.points += points;
+    }
+
+    public void addActualBooks(){
+        this.actualBooks++;
+    }
+
+    public int getActualBooks(){
+        return actualBooks;
+    }
+
+    public void removeActualBooks(){
+        this.actualBooks--;
     }
 
     @Override

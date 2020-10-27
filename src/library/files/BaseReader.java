@@ -19,12 +19,12 @@ public class BaseReader {
         return baseReader;
     }
 
-    public List<Type> readType() {
-        List<Type> types = new ArrayList<>();
+    public HashMap<Integer, Type> readType() {
+        HashMap<Integer, Type> types = new HashMap<>();
         File file = new File("resources/data/types.ser");
         if(file.exists()){
             try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("resources/data/types.ser"))) {
-                types = (List<Type>) ois.readObject();
+                types = (HashMap<Integer, Type>) ois.readObject();
                 return types;
             }catch (ClassNotFoundException e){
                 System.err.println("Classe não encontrada");
@@ -41,7 +41,7 @@ public class BaseReader {
                 String[] data = line.split("\t");
                 int typeId = Integer.parseInt(data[0]);
                 String name = data[1];
-                types.add(new Type(typeId, name));
+                types.put(typeId, new Type(typeId, name));
             }
         }catch (IOException e){
             System.err.println("Erro ao abrir arquivo types.tsv");
@@ -51,12 +51,12 @@ public class BaseReader {
         return types;
     }
 
-    public List<Author> readAuthor(){
-        List<Author> authors = new ArrayList<>();
+    public HashMap<Integer, Author> readAuthor(){
+        HashMap<Integer, Author> authors = new HashMap<>();
         File file = new File("resources/data/authors.ser");
         if(file.exists()){
             try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("resources/data/authors.ser"))) {
-                authors = (List<Author>) ois.readObject();
+                authors = (HashMap<Integer, Author>) ois.readObject();
                 return authors;
             }catch (ClassNotFoundException e){
                 System.err.println("Classe não encontrada");
@@ -74,7 +74,7 @@ public class BaseReader {
                 int authorId = Integer.parseInt(data[0]);
                 String name = data[1];
                 String surname = data[2];
-                authors.add(new Author(authorId, name, surname));
+                authors.put(authorId, new Author(authorId, name, surname));
             }
         }catch (IOException e){
             System.err.println("Erro ao abrir arquivo authorsFull.tsv");
@@ -84,12 +84,12 @@ public class BaseReader {
         return authors;
     }
 
-    public List<Student> readStudent(){
-        List<Student> students = new ArrayList<>();
+    public HashMap<Integer, Student> readStudent(){
+        HashMap<Integer, Student> students = new HashMap<>();
         File file = new File("resources/data/students.ser");
         if(file.exists()){
             try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("resources/data/students.ser"))) {
-                students = (List<Student>) ois.readObject();
+                students = (HashMap<Integer, Student>) ois.readObject();
                 return students;
             }catch (ClassNotFoundException e){
                 System.err.println("Classe não encontrada");
@@ -111,7 +111,7 @@ public class BaseReader {
                 char gender = data[4].charAt(0);
                 String classCode = data[5];
                 int points = Integer.parseInt(data[6]);
-                students.add(new Student(studentId, name, surname, birthdate, gender, classCode, points));
+                students.put(studentId, new Student(studentId, name, surname, birthdate, gender, classCode, points));
             }
         }catch (IOException e){
             System.err.println("Erro ao abrir arquivo students.tsv");
@@ -121,12 +121,12 @@ public class BaseReader {
         return students;
     }
 
-    public List<Book> readBook(){
-        List<Book> books = new ArrayList<>();
+    public HashMap<Integer, Book> readBook(){
+        HashMap<Integer, Book> books = new HashMap<>();
         File file = new File("resources/data/books.ser");
         if(file.exists()){
             try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("resources/data/books.ser"))) {
-                books = (List<Book>) ois.readObject();
+                books = (HashMap<Integer, Book>) ois.readObject();
                 return books;
             }catch (ClassNotFoundException e){
                 System.err.println("Classe não encontrada");
@@ -147,7 +147,7 @@ public class BaseReader {
                 int points = Integer.parseInt(data[3]);
                 int authorId = Integer.parseInt(data[4]);
                 int typeId = Integer.parseInt(data[5]);
-                books.add(new Book(bookId, name, pageCount, points, authorId, typeId));
+                books.put(bookId, new Book(bookId, name, pageCount, points, authorId, typeId));
             }
         }catch (IOException e){
             System.err.println("Erro ao abrir arquivo books.tsv");
@@ -157,12 +157,12 @@ public class BaseReader {
         return books;
     }
 
-    public List<Borrow> readBorrow(){
-        List<Borrow> borrows = new ArrayList<>();
+    public HashMap<Integer, Borrow> readBorrow(){
+        HashMap<Integer, Borrow> borrows = new HashMap<>();
         File file = new File("resources/data/borrows.ser");
         if(file.exists()){
             try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("resources/data/borrows.ser"))) {
-                borrows = (List<Borrow>) ois.readObject();
+                borrows = (HashMap<Integer, Borrow>) ois.readObject();
                 return borrows;
             }catch (ClassNotFoundException e){
                 System.err.println("Classe não encontrada");
@@ -183,7 +183,7 @@ public class BaseReader {
                 int bookId = Integer.parseInt(data[2]);
                 LocalDateTime takenDate = LocalDateTime.parse(data[3],formatter);
                 LocalDateTime broughtDate = LocalDateTime.parse(data[4],formatter);
-                borrows.add(new Borrow(borrowId, studentId, bookId, takenDate, broughtDate));
+                borrows.put(borrowId, new Borrow(borrowId, studentId, bookId, takenDate, broughtDate));
             }
         }catch (IOException e){
             System.err.println("Erro ao abrir arquivo borrows.tsv");
