@@ -53,16 +53,16 @@ public class BaseReader {
 
     public HashMap<Integer, Author> readAuthor(){
         HashMap<Integer, Author> authors = new HashMap<>();
-        File file = new File("resources/data/authors.ser");
+        File file = new File("resources/data/authorsFull.ser");
         if(file.exists()){
-            try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("resources/data/authors.ser"))) {
+            try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("resources/data/authorsFull.ser"))) {
                 authors = (HashMap<Integer, Author>) ois.readObject();
                 return authors;
             }catch (ClassNotFoundException e){
                 System.err.println("Classe não encontrada");
                 e.printStackTrace();
             }catch (IOException e){
-                System.err.println("Erro ao abrir arquivo authors.ser");
+                System.err.println("Erro ao abrir arquivo authorsFull.ser");
                 e.printStackTrace();
             }
         }

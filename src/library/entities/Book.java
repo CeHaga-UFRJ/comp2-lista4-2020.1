@@ -3,6 +3,7 @@ package library.entities;
 import library.interfaces.Notifiable;
 
 import java.io.Serializable;
+import java.util.*;
 
 public class Book implements Serializable, Notifiable {
     public static final long serialVersionUID = 2000L;
@@ -17,8 +18,8 @@ public class Book implements Serializable, Notifiable {
     private int typeId;
     private Author author;
     private Type type;
+    private List<Student> borrowedCopies;
     private int timesBorrowed;
-    private int actualCopies;
 
     public Book(int bookId, String name, int pageCount, int point, int authorId, int typeId) {
         this.bookId = bookId;
@@ -27,7 +28,7 @@ public class Book implements Serializable, Notifiable {
         this.point = point;
         this.authorId = authorId;
         this.typeId = typeId;
-        actualCopies = 2;
+        borrowedCopies = new ArrayList<>();
         if(lastId < bookId) lastId = bookId;
     }
 
@@ -38,7 +39,7 @@ public class Book implements Serializable, Notifiable {
         this.point = point;
         setAuthor(author);
         setType(type);
-        actualCopies = 2;
+        borrowedCopies = new ArrayList<>();
     }
 
     public int getBookId() {
@@ -91,16 +92,20 @@ public class Book implements Serializable, Notifiable {
         this.timesBorrowed++;
     }
 
-    public void addActualCopies(){
-        this.actualCopies++;
+    public void addBorrowedCopy(Student student){
+        this.borrowedCopies.add(student);
     }
 
-    public void removeActualCopies(){
-        this.actualCopies--;
+    public void removeBorrowedCopy(Student student){
+        this.borrowedCopies.remove(student);
+    }
+
+    public boolean isBorrowedBy(Student student){
+        return borrowedCopies.contains(student);
     }
 
     public int getActualCopies(){
-        return actualCopies;
+        return 2 - borrowedCopies.size();
     }
 
     @Override

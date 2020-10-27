@@ -248,13 +248,17 @@ public class LibraryForms {
     public Boolean borrow(){
         Student student = readStudent();
         if(student == null) return false;
-        if(student.getActualBooks() > 2){
+        if(student.getActualBooks() == 2){
             System.out.println("O estudante já possui 2 livros");
             return false;
         }
         Book book = readBook();
         if(book == null) return false;
-        if(book.getActualCopies() < 0){
+        if(book.isBorrowedBy(student)){
+            System.out.println("Esse estudante está com uma cópia desse livro");
+            return false;
+        }
+        if(book.getActualCopies() == 0){
             System.out.println("O livro não possui mais cópias disponíveis");
             return false;
         }
@@ -271,7 +275,7 @@ public class LibraryForms {
             LocalDateTime broughtDate = readDateTime();
             dm.registerBorrow(student, book, takenDate, broughtDate);
         }else{
-            dm.registerBorrow(student, book, takenDate);
+            dm.registerBorrow(student, book, takenDate, null);
         }
         return true;
     }
@@ -283,6 +287,10 @@ public class LibraryForms {
         DataManager dm = DataManager.getDataManager();
         Borrow borrow = dm.getBorrowById(id);
         if(borrow == null) return false;
+        if(borrow.getBroughtDate() != null){
+            System.out.println("O livro já foi devolvido");
+            return false;
+        }
         System.out.println("Entre com a data que ocorreu a devolução.");
         LocalDateTime date = readDateTime();
         dm.setBorrowReturn(borrow, date);

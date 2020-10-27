@@ -19,7 +19,6 @@ public class Borrow implements Serializable, Notifiable {
     private LocalDateTime broughtDate;
     private Student student;
     private Book book;
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy 'às' HH:mm");
 
     public Borrow(int borrowId, int studentId, int bookId, LocalDateTime takenDate, LocalDateTime broughtDate) {
         this.borrowId = borrowId;
@@ -36,18 +35,6 @@ public class Borrow implements Serializable, Notifiable {
         setBook(book);
         this.takenDate = takenDate;
         this.broughtDate = broughtDate;
-        student.addBorrowedBooks();
-        book.addTimesBorrowed();
-        book.getType().addTimesBorrowed();
-        book.getAuthor().addTimesBorrowed();
-    }
-
-    public Borrow(Student student, Book book, LocalDateTime takenDate) {
-        this.borrowId = ++lastId;
-        setStudent(student);
-        setBook(book);
-        this.takenDate = takenDate;
-        this.broughtDate = null;
         student.addBorrowedBooks();
         book.addTimesBorrowed();
         book.getType().addTimesBorrowed();
@@ -98,6 +85,7 @@ public class Borrow implements Serializable, Notifiable {
 
     @Override
     public String toString(){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy 'às' HH:mm");
         LocalDateTime last = broughtDate;
         String status = "FECHADO";
         if(last == null){

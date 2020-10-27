@@ -2,6 +2,7 @@ package library.controller;
 
 import library.entities.*;
 import library.files.BaseReader;
+import library.files.BaseWriter;
 import library.interfaces.Notifiable;
 
 import java.time.*;
@@ -18,6 +19,7 @@ public class DataManager {
     private HashMap<Integer, Author> authors;
     private HashMap<Integer, Type> types;
     private HashMap<Integer, Borrow> borrows;
+    private BaseWriter bw;
 
     private DataManager(){
         StatsManager sm = StatsManager.getStatsManager();
@@ -26,6 +28,7 @@ public class DataManager {
         EventManager.subscribe("type",sm);
         EventManager.subscribe("student",sm);
         EventManager.subscribe("author",sm);
+        bw = new BaseWriter();
     }
 
     public static DataManager getDataManager() {
@@ -208,6 +211,7 @@ public class DataManager {
         Student student = new Student(name, surname, birthdate, gender, classCode, points);
         students.put(student.getStudentId(), student);
         notify("student",student);
+        bw.writeMap(students, "students.ser");
         return student;
     }
 
@@ -216,6 +220,7 @@ public class DataManager {
         Book book = new Book(name, pageCount, point, author, type);
         books.put(book.getBookId(), book);
         notify("book",book);
+        bw.writeMap(books, "books.ser");
         return book;
     }
 
@@ -224,6 +229,7 @@ public class DataManager {
         Author author = new Author(name, surname);
         authors.put(author.getAuthorId(), author);
         notify("author",author);
+        bw.writeMap(authors, "authorsFull.ser");
         return author;
     }
 
@@ -232,6 +238,7 @@ public class DataManager {
         Type type = new Type(name);
         types.put(type.getTypeId(), type);
         notify("type",type);
+        bw.writeMap(types, "types.ser");
         return type;
     }
 
@@ -239,19 +246,15 @@ public class DataManager {
         borrows = getBorrows();
         Borrow borrow = new Borrow(student, book, takenDate, broughtDate);
         borrows.put(borrow.getBorrowId(), borrow);
-        student.addPoints(book.getPoint());
+        if(broughtDate == null){
+            student.addPoints(-book.getPoint());
+            student.addActualBooks();
+            book.addBorrowedCopy(student);
+        }else{
+            student.addPoints(book.getPoint());
+        }
         notify("borrow",borrow);
-        return borrow;
-    }
-
-    public Borrow registerBorrow(Student student, Book book, LocalDateTime takenDate){
-        borrows = getBorrows();
-        Borrow borrow = new Borrow(student, book, takenDate);
-        borrows.put(borrow.getBorrowId(), borrow);
-        student.addPoints(-book.getPoint());
-        student.addActualBooks();
-        book.removeActualCopies();
-        notify("borrow",borrow);
+        bw.writeMap(borrows, "borrows.ser");
         return borrow;
     }
 
@@ -261,7 +264,8 @@ public class DataManager {
         Book b = borrow.getBook();
         s.addPoints(2*borrow.getBook().getPoint());
         s.removeActualBooks();
-        b.addActualCopies();
+        b.removeBorrowedCopy(s);
+        bw.writeMap(borrows, "borrows.ser");
     }
 
     private void notify(String type, Notifiable data){
