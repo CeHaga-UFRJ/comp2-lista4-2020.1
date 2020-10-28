@@ -5,6 +5,10 @@ import library.interfaces.Notifiable;
 import java.io.Serializable;
 import java.time.LocalDate;
 
+/**
+ * Classe para representar um estudante
+ * @author Carlos Bravo - cehaga@dcc.ufrj.br
+ */
 public class Student implements Serializable, Notifiable {
     public static final long serialVersionUID = 4000L;
 
@@ -75,14 +79,24 @@ public class Student implements Serializable, Notifiable {
         return borrowedBooks;
     }
 
+    /**
+     * Soma 1 à quantidade de livros pegos
+     */
     public void addBorrowedBooks() {
         this.borrowedBooks++;
     }
 
+    /**
+     * Adiciona pontos ao estudante
+     * @param points Quantidade de pontos recebidos
+     */
     public void addPoints(int points){
         this.points += points;
     }
 
+    /**
+     * Soma 1 à quantidade de livros possuídos
+     */
     public void addActualBooks(){
         this.actualBooks++;
     }
@@ -91,6 +105,9 @@ public class Student implements Serializable, Notifiable {
         return actualBooks;
     }
 
+    /**
+     * Diminui 1 da quantidade de livros possuídos
+     */
     public void removeActualBooks(){
         this.actualBooks--;
     }

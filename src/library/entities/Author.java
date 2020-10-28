@@ -4,6 +4,10 @@ import library.interfaces.Notifiable;
 
 import java.io.Serializable;
 
+/**
+ * Classe para representar um autor
+ * @author Carlos Bravo - cehaga@dcc.ufrj.br
+ */
 public class Author implements Serializable, Notifiable {
     public static final long serialVersionUID = 1000L;
 
@@ -43,6 +47,9 @@ public class Author implements Serializable, Notifiable {
         return timesBorrowed;
     }
 
+    /**
+     * Soma 1 à quantidade de vezes pego
+     */
     public void addTimesBorrowed() {
         this.timesBorrowed++;
     }

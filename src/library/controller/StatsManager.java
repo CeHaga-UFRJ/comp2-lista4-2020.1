@@ -9,6 +9,10 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 
+/**
+ * Gerenciador de estatísticas
+ * @author Carlos Bravo - cehaga@dcc.ufrj.br
+ */
 class StatsManager implements LibraryListeners {
     private static StatsManager statsManager;
 
@@ -28,11 +32,19 @@ class StatsManager implements LibraryListeners {
         borrowsNDays = new TreeSet<>(new MostDaysBorrowComparator());
     }
 
+    /**
+     * Cria caso não exista e retorna a instância de StatsManager
+     * @return Instância ativa de StatsManager
+     */
     public static StatsManager getStatsManager() {
         if(statsManager == null) statsManager = new StatsManager();
         return statsManager;
     }
 
+    /**
+     * Retorna a lista de autores mais populares. Caso não exista, faz uma requisição a DataManager
+     * @return Lista de autores mais populares
+     */
     public List<Author> getMostPopularAuthor() {
         if(!mostPopularAuthor.isEmpty()){
             List<Author> mostPopularAuthorList = new ArrayList<>(mostPopularAuthor);
@@ -46,6 +58,10 @@ class StatsManager implements LibraryListeners {
         return mostPopularAuthorList;
     }
 
+    /**
+     * Retorna a lista de estilos mais populares. Caso não exista, faz uma requisição a DataManager
+     * @return Lista de estilos mais populares
+     */
     public List<Type> getMostPopularType() {
         if(!mostPopularType.isEmpty()){
             List<Type> mostPopularTypeList = new ArrayList<>(mostPopularType);
@@ -59,6 +75,10 @@ class StatsManager implements LibraryListeners {
         return mostPopularTypeList;
     }
 
+    /**
+     * Retorna a lista de estudante que mais pegaram livros. Caso não exista, faz uma requisição a DataManager
+     * @return Lista de estudante que mais pegaram livros
+     */
     public List<Student> getMostBorrowerStudent() {
         if(!mostBorrowerStudent.isEmpty()){
             List<Student> mostBorrowerStudentList = new ArrayList<>(mostBorrowerStudent);
@@ -85,6 +105,10 @@ class StatsManager implements LibraryListeners {
         return mostPopularBookList;
     }
 
+    /**
+     * Retorna a lista dos últimos empréstimos. Caso não exista, faz uma requisição a DataManager
+     * @return Lista dos últimos empréstimos
+     */
     public List<Borrow> getLastNBorrows() {
         if(!lastNBorrows.isEmpty()){
             List<Borrow> lastNBorrowsList = new ArrayList<>(lastNBorrows);
@@ -98,6 +122,10 @@ class StatsManager implements LibraryListeners {
         return lastNBorrowsList;
     }
 
+    /**
+     * Retorna a lista de empréstimos com mais tempo. Caso não exista, faz uma requisição a DataManager
+     * @return Lista de empréstimos com mais tempo
+     */
     public List<Borrow> getBorrowsNDays() {
         if(!borrowsNDays.isEmpty()){
             List<Borrow> borrowsNDaysList = new ArrayList<>(borrowsNDays);
@@ -111,12 +139,22 @@ class StatsManager implements LibraryListeners {
         return borrowsNDaysList;
     }
 
+    /**
+     * Calcula o ranking dos últimos N empréstimos
+     * @param n Número de registros
+     * @return Lista dos N empréstimos ordenados
+     */
     public List<Borrow> lastNBorrowsRank(int n){
         List<Borrow> borrows = getLastNBorrows();
         int min = Math.min(n, borrows.size());
         return new ArrayList<>(borrows.subList(0,min));
     }
 
+    /**
+     * Calcula o ranking dos empréstimo que duraram pelo menos N dias
+     * @param n Número de dias
+     * @return Lista dos empréstimos ordenados
+     */
     public List<Borrow> borrowsNDaysRank(int n){
         List<Borrow> borrows = getBorrowsNDays();
         List<Borrow> rank = new ArrayList<>();
@@ -130,30 +168,54 @@ class StatsManager implements LibraryListeners {
         return rank;
     }
 
+    /**
+     * Calcula o ranking dos N estudantes que mais pegaram livros
+     * @param n Número de registros
+     * @return Lista dos N estudantes ordenados
+     */
     public List<Student> mostNBorrowerStudentRank(int n){
         List<Student> students = getMostBorrowerStudent();
         int min = Math.min(n, students.size());
         return new ArrayList<>(students.subList(0, min));
     }
 
+    /**
+     * Calcula o ranking dos N livros mais populares
+     * @param n Número de registros
+     * @return Lista dos N livros ordenados
+     */
     public List<Book> mostNPopularBooksRank(int n){
         List<Book> books = getMostPopularBook();
         int min = Math.min(n, books.size());
         return new ArrayList<>(books.subList(0, min));
     }
 
+    /**
+     * Calcula o ranking dos N autores mais populares
+     * @param n Número de registros
+     * @return Lista dos N autores ordenados
+     */
     public List<Author> mostNPopularAuthorsRank(int n){
         List<Author> authors = getMostPopularAuthor();
         int min = Math.min(n, authors.size());
         return new ArrayList<>(authors.subList(0, min));
     }
 
+    /**
+     * Calcula o ranking dos N estilos mais populares
+     * @param n Número de registros
+     * @return Lista dos N estilos ordenados
+     */
     public List<Type> mostNPopularTypes(int n){
         List<Type> types = getMostPopularType();
         int min = Math.min(n, types.size());
         return new ArrayList<>(types.subList(0, min));
     }
 
+    /**
+     * Atualiza os registros em caso de novos dados
+     * @param data Dado modificado
+     */
     @Override
     public void update(Notifiable data) {
         if(data instanceof Borrow){

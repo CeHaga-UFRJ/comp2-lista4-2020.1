@@ -4,6 +4,10 @@ import library.entities.Book;
 
 import java.util.Comparator;
 
+/**
+ * Comparador entre livros que mais foram pegos. Ordem descrescente
+ * @author Carlos Bravo - cehaga@dcc.ufrj.br
+ */
 public class MostBorrowedBooksComparator implements Comparator<Book> {
     @Override
     public int compare(Book b1, Book b2) {

@@ -5,6 +5,10 @@ import library.interfaces.Notifiable;
 import java.io.Serializable;
 import java.util.*;
 
+/**
+ * Classe para representar um livro
+ * @author Carlos Bravo - cehaga@dcc.ufrj.br
+ */
 public class Book implements Serializable, Notifiable {
     public static final long serialVersionUID = 2000L;
 
@@ -88,22 +92,42 @@ public class Book implements Serializable, Notifiable {
         return timesBorrowed;
     }
 
+    /**
+     * Soma 1 a quantidade de vezes pego
+     */
     public void addTimesBorrowed() {
         this.timesBorrowed++;
     }
 
+    /**
+     * Adiciona um estudante a lista de empréstimos
+     * @param student Estudante que pegou emprestado
+     */
     public void addBorrowedCopy(Student student){
         this.borrowedCopies.add(student);
     }
 
+    /**
+     * Remove um estudantes da lista de empréstimos
+     * @param student Estudante que devolveu o livro
+     */
     public void removeBorrowedCopy(Student student){
         this.borrowedCopies.remove(student);
     }
 
+    /**
+     * Confere se um estudante está com um exemplar desse livro
+     * @param student Estudante a ser procurado
+     * @return true caso o estudante tenha uma cópia, false caso contrário
+     */
     public boolean isBorrowedBy(Student student){
         return borrowedCopies.contains(student);
     }
 
+    /**
+     * Retorna o número de cópias ainda disponíveis
+     * @return O número de cópias ainda disponíveis do livro
+     */
     public int getActualCopies(){
         return 2 - borrowedCopies.size();
     }

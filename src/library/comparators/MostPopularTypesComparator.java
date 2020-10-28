@@ -4,6 +4,10 @@ import library.entities.Type;
 
 import java.util.Comparator;
 
+/**
+ * Comparador entre estilos que mais foram pegos. Ordem descrescente
+ * @author Carlos Bravo - cehaga@dcc.ufrj.br
+ */
 public class MostPopularTypesComparator implements Comparator<Type> {
     @Override
     public int compare(Type t1, Type t2) {

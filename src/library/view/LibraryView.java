@@ -4,6 +4,10 @@ import library.controller.DataManager;
 
 import java.util.*;
 
+/**
+ * Classe para imprimir os menus e escolhas do usuário
+ * @author Carlos Bravo - cehaga@dcc.ufrj.br
+ */
 public class LibraryView {
     public static final Scanner sc = new Scanner(System.in);
     private final LibraryForms lf;
@@ -12,6 +16,9 @@ public class LibraryView {
         lf = new LibraryForms(sc);
     }
 
+    /**
+     * Começa o programa
+     */
     public void startProgram(){
         while(true){
             printMenu();

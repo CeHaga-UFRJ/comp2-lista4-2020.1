@@ -4,6 +4,10 @@ import library.interfaces.Notifiable;
 
 import java.io.Serializable;
 
+/**
+ * Classe para representar um estilo
+ * @author Carlos Bravo - cehaga@dcc.ufrj.br
+ */
 public class Type implements Serializable, Notifiable {
     public static final long serialVersionUID = 5000L;
 
@@ -36,6 +40,9 @@ public class Type implements Serializable, Notifiable {
         return timesBorrowed;
     }
 
+    /**
+     * Soma 1 à quantidade de vezes pego
+     */
     public void addTimesBorrowed() {
         this.timesBorrowed++;
     }

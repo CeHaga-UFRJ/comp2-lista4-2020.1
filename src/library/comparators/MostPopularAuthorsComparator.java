@@ -4,6 +4,10 @@ import library.entities.Author;
 
 import java.util.Comparator;
 
+/**
+ * Comparador entre autores que mais foram pegos. Ordem descrescente
+ * @author Carlos Bravo - cehaga@dcc.ufrj.br
+ */
 public class MostPopularAuthorsComparator implements Comparator<Author> {
     @Override
     public int compare(Author a1, Author a2) {

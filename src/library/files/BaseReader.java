@@ -7,6 +7,10 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+/**
+ * Utilidades de leitura do banco
+ * @author Carlos Bravo - cehaga@dcc.ufrj.br
+ */
 public class BaseReader {
     private static BaseReader baseReader;
 
@@ -14,11 +18,19 @@ public class BaseReader {
 
     }
 
+    /**
+     * Cria caso não exista e retorna a instância de BaseReader
+     * @return Instância ativa de BaseReader
+     */
     public static BaseReader getBaseReader(){
         if(baseReader == null) baseReader = new BaseReader();
         return baseReader;
     }
 
+    /**
+     * Lê os estilos da base própria, senão do TSV
+     * @return Mapa de estilos chaveados pelo id
+     */
     public HashMap<Integer, Type> readType() {
         HashMap<Integer, Type> types = new HashMap<>();
         File file = new File("resources/data/types.ser");
@@ -51,6 +63,10 @@ public class BaseReader {
         return types;
     }
 
+    /**
+     * Lê os autores da base própria, senão do TSV
+     * @return Mapa de autores chaveados pelo id
+     */
     public HashMap<Integer, Author> readAuthor(){
         HashMap<Integer, Author> authors = new HashMap<>();
         File file = new File("resources/data/authorsFull.ser");
@@ -84,6 +100,10 @@ public class BaseReader {
         return authors;
     }
 
+    /**
+     * Lê os estudantes da base própria, senão do TSV
+     * @return Mapa de estudantes chaveados pelo id
+     */
     public HashMap<Integer, Student> readStudent(){
         HashMap<Integer, Student> students = new HashMap<>();
         File file = new File("resources/data/students.ser");
@@ -121,6 +141,10 @@ public class BaseReader {
         return students;
     }
 
+    /**
+     * Lê os livros da base própria, senão do TSV
+     * @return Mapa de livros chaveados pelo id
+     */
     public HashMap<Integer, Book> readBook(){
         HashMap<Integer, Book> books = new HashMap<>();
         File file = new File("resources/data/books.ser");
@@ -157,6 +181,10 @@ public class BaseReader {
         return books;
     }
 
+    /**
+     * Lê os empréstimos da base própria, senão do TSV
+     * @return Mapa de empréstimos chaveados pelo id
+     */
     public HashMap<Integer, Borrow> readBorrow(){
         HashMap<Integer, Borrow> borrows = new HashMap<>();
         File file = new File("resources/data/borrows.ser");

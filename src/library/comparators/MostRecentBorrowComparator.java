@@ -4,6 +4,10 @@ import library.entities.Borrow;
 
 import java.util.Comparator;
 
+/**
+ * Comparador entre empréstimos mais recentes. Ordem descrescente
+ * @author Carlos Bravo - cehaga@dcc.ufrj.br
+ */
 public class MostRecentBorrowComparator implements Comparator<Borrow> {
     @Override
     public int compare(Borrow b1, Borrow b2) {

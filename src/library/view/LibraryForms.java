@@ -7,6 +7,10 @@ import library.exceptions.NumberOutOfRangeException;
 import java.time.*;
 import java.util.*;
 
+/**
+ * Classe contendo os formulários do programa
+ * @author Carlos Bravo - cehaga@dcc.ufrj.br
+ */
 public class LibraryForms {
     private final Scanner sc;
 
@@ -14,7 +18,12 @@ public class LibraryForms {
         this.sc = sc;
     }
 
-
+    /**
+     * Lê um número da entrada padrão entre min e max
+     * @param min Número mínimo
+     * @param max Número máximo
+     * @return Número lido
+     */
     public int readNumber(int min, int max){
         if(min > max) throw new NumberOutOfRangeException("Mínimo maior que máximo");
         int input;
@@ -33,6 +42,11 @@ public class LibraryForms {
         }
     }
 
+    /**
+     * Lê um número da entrada padrão com piso mínimo
+     * @param min Número mínimo
+     * @return Número lido
+     */
     public int readNumber(int min){
         int input;
         while(true){
@@ -50,6 +64,10 @@ public class LibraryForms {
         }
     }
 
+    /**
+     * Lê uma data da entrada padrão
+     * @return Data lida
+     */
     public LocalDate readDate(){
         int birthDay;
         int birthMonth;
@@ -65,6 +83,10 @@ public class LibraryForms {
         return LocalDate.of(birthYear, birthMonth, birthDay);
     }
 
+    /**
+     * Lê uma data com hora da entrada padrão
+     * @return Data lida
+     */
     public LocalDateTime readDateTime(){
         LocalDate date = readDate();
         int hour;
@@ -76,6 +98,10 @@ public class LibraryForms {
         return date.atTime(hour, minute);
     }
 
+    /**
+     * Procura um autor pelo sobrenome ou id
+     * @return Instância encontrada
+     */
     public Author readAuthor(){
         DataManager dm = DataManager.getDataManager();
         String input;
@@ -109,6 +135,10 @@ public class LibraryForms {
         return author;
     }
 
+    /**
+     * Procura um autor pelo sobrenome ou id. Caso não exista, cria um novo
+     * @return Instância encontrada ou criada
+     */
     public Author readAuthorElseCreate(){
         Author author = readAuthor();
         if(author != null) return author;
@@ -122,6 +152,10 @@ public class LibraryForms {
         return dm.registerAuthor(authorName, authorSurname);
     }
 
+    /**
+     * Procura um estilo pelo nome ou id
+     * @return Instância do estilo
+     */
     public Type readType(){
         String input;
         DataManager dm = DataManager.getDataManager();
@@ -137,6 +171,10 @@ public class LibraryForms {
         return type;
     }
 
+    /**
+     * Procura um estilo pelo nome ou id. Caso não exista, cria um novo
+     * @return Instância encontrada ou criada
+     */
     public Type readTypeElseCreate(){
         Type type = readType();
         if(type != null) return type;
@@ -146,6 +184,10 @@ public class LibraryForms {
         return dm.registerType(name);
     }
 
+    /**
+     * Procura um estudante pelo sobrenome ou id
+     * @return Instância do estudante
+     */
     public Student readStudent(){
         String input;
         DataManager dm = DataManager.getDataManager();
@@ -179,6 +221,10 @@ public class LibraryForms {
         return student;
     }
 
+    /**
+     * Procura um livro pelo nome ou id
+     * @return Instância do livro
+     */
     public Book readBook(){
         String input;
         DataManager dm = DataManager.getDataManager();
@@ -194,6 +240,9 @@ public class LibraryForms {
         return book;
     }
 
+    /**
+     * Lê os dados de um estudante para cadastro
+     */
     public void registerStudent(){
         String name;
         String surname;
@@ -227,6 +276,9 @@ public class LibraryForms {
         dm.registerStudent(name, surname, birthDate, gender, classCode, points);
     }
 
+    /**
+     * Lê os dados de um livro para cadastro
+     */
     public void registerBook(){
         DataManager dm = DataManager.getDataManager();
         String name;
@@ -245,6 +297,10 @@ public class LibraryForms {
         dm.registerBook(name, pageCount, point, author, type);
     }
 
+    /**
+     * Lê os dados para realizar um empréstimo
+     * @return null caso tenha sido cancelado, true se teve sucesso e false caso tenha tido erro
+     */
     public Boolean borrow(){
         Student student = readStudent();
         if(student == null) return false;
@@ -280,6 +336,10 @@ public class LibraryForms {
         return true;
     }
 
+    /**
+     * Lê os dados para realizar uma devolução
+     * @return null caso tenha sido cancelado, true caso tenha tido sucesso e false caso tenha tido um erro
+     */
     public Boolean brought(){
         System.out.println("Entre com o id do empréstimo ou 0 para cancelar:");
         int id = readNumber(0);

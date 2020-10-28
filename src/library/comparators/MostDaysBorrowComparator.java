@@ -5,6 +5,10 @@ import library.entities.Borrow;
 import java.time.*;
 import java.util.Comparator;
 
+/**
+ * Comparador entre empréstimos que duraram mais dias. Ordem descrescente
+ * @author Carlos Bravo - cehaga@dcc.ufrj.br
+ */
 public class MostDaysBorrowComparator implements Comparator<Borrow> {
     @Override
     public int compare(Borrow b1, Borrow b2) {

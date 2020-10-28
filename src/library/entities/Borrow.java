@@ -7,6 +7,10 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Classe para representar um empréstimo
+ * @author Carlos Bravo - cehaga@dcc.ufrj.br
+ */
 public class Borrow implements Serializable, Notifiable {
     public static final long serialVersionUID = 3000L;
 
